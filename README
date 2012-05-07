@@ -1,8 +1,9 @@
 These scripts are used for calculating the free-hand test for single particles in electron microscopy images, implementing protocols developed by Rosenthal &  Henderson, 2003, J. Mol. Biol.  
 
-They were given to the Nogales lab from John Rubinstein at University of Toronto, and the wiki can be found: 
+They were given to the Nogales lab from John Rubinstein at University of Toronto.  
 
-https://cryoem.berkeley.edu/wiki/doku.php?id=free-hand_test
-
-Location on angula:
-/home/michael/Scripts/FreeHand
+Master scripts:
+- 'ctftilt.py' - For leginon micrographs with .box files, estimate defocus and angle with ctftilt.exe and extract particles.
+- 'freeHand_wrapper.py' - Using EMAN2/Sparx scripts, assign euler angles and perform free-hand test
+- 'freeHand_calc_plot.py' - Generate free-hand plots and consolidate files into an output folder
+- 'free_param.par' - necessary input file for 'freeHand_wrapper.py' and 'freeHand_calc_plot.py' 
