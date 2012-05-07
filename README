@@ -4,6 +4,14 @@ Free-hand scripts were given to the Nogales lab from John Rubinstein at Universi
 
 _________________________________________
 
+Executable files (compiled on ubuntu) provided by John Rubinstein:
+'fastfreehand_v1_01.csh' - C-Sell script that calls 'fastfreehand_v1_01.exe,' to run free-hand test
+'totsumstack.csh' - C-Shell script that calls 'totsumstack.csh'
+'npo_CC.csh' - C-Shell script that calls CCP4 commands to create free-hand contour plot
+
+_________________________________________
+
+Higher-level scripts that wrap everything together:
 
 Particle extraction:
 'ctftilt.py' - For leginon micrographs with .box files, estimate defocus and angle with ctftilt.exe and extract particles.
