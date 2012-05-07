@@ -1,0 +1,25 @@
+#General info
+pix = 6.02			#pixel size
+boxSize = 100			#box size
+num_part = 63			#total number of particles
+num_mod = 1			#Number of models
+
+#Refinement info
+angular = 14			#Angular step for projection matching
+shift = 2			#Shift range
+ts = 0.5			#Shift step size
+snr = 0.07			#Amplitude contrast:  0.20 for neg. stain; 0.07 for cryo
+radius = 32			#Radius of your model (in pixels)
+cutoff = 0	                #Std. dev. for cutoff
+
+#Free Hand test info
+cs = 2.2			#Spherical abberration of microscope:  T12 = 6.2; T20 = 2.2
+volt = 120			#Accelerating voltage
+freeHand_ang_search = 30	#Angular search used for generating free-hand plot
+calc = C			#P - phase residual; C - cross correlation plots
+min_res = 1000			#Low resolution cutoff
+max_res = 30			#High resolution cutoff
+mag = 99993			#Magnification
+first = 1			#First particle
+last = 63			#Last particle
+incr = 8			#Increment for parallel processing:  # processors = last / incr

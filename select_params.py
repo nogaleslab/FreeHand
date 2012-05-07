@@ -14,8 +14,14 @@ def setupParserOptions():
 	parser.set_usage("%prog -p <parameter> -b <exclude>")
 	parser.add_option("-p",dest="param",type="string",metavar="FILE",
 		help="Parameter file with per-particle CTF information from ctftilt.py")
-	parser.add_option("-b",dest="bad",type="string",metavar="FILE",
-		help="List of particles to exclude (numbered in EMAN format)")
+	parser.add_option("-l",dest="list",type="string",metavar="FILE",
+		help="List of particles (numbered in EMAN format)")
+        parser.add_option("-o",dest="out",type="string",metavar="FILE",
+                help="Output filename")
+        parser.add_option("-b", action="store_true",dest="bad",default=False,
+                help="Flag if particle list is for particles to EXCLUDE")
+        parser.add_option("-g", action="store_true",dest="good",default=False,
+                help="Flag if particle list is for particles to INCLUDE")
 	parser.add_option("-d", action="store_true",dest="debug",default=False,
                 help="debug")
 	options,args = parser.parse_args()
@@ -38,40 +44,73 @@ def setupParserOptions():
 #Inputs 
 def main(params):
 	f = params['param']
-	bad = params['bad']	#EMAN numbering scheme
+	list = params['list']	#EMAN numbering scheme
 	debug = params['debug']
 	fnew = f[:-4]
-
-	fout = '%s_sel.par' %(fnew)
+	bad = params['bad']
+	good = params['good']
+	if debug is True:
+		print 'bad flag is %s' %(bad)
+		print 'particle list is %s' %(list)
+	fout = params['out']
 
 	o = open(fout,'w')
 
 	f1 = open(f,'r')
 
-	b1 = open(bad,'r')
-	bad = b1.readlines()
+	b1 = open(list,'r')
+	bad2 = b1.readlines()
 
 	tot = len(f1.readlines())
 
 	i = 1
 
-	while i <= tot:
-	
-		n = '%s\n' %(i-1)
-	
-		if n in bad:
+	if bad is True:
+
+		if debug is True:
+			print 'Bad particle list = %s' %(list)
+
+		while i <= tot:
+		
+			n = '%s\n' %(i-1)
 			if debug is True:
-				print ('Particle %s is excluded' %(i))
+				print 'Checking particle %s' %(n)
+
+			if n in bad2:
+				if debug is True:
+					print ('---------------------> Particle %s is excluded' %(i-1))
+				i = i + 1
+				continue
+
+			l = linecache.getline(f,i)
+			line = l.split()
+			o.write('%s		%s		%s		%s	%s	%s\n' %(line[0],line[1],line[2],line[3],line[4],line[5]))
+
 			i = i + 1
-			continue
 
-		l = linecache.getline(f,i)
-		line = l.split()
-		o.write('%s		%s		%s		%s\n' %(line[0],line[1],line[2],line[3]))
+		o.close()
 
-		i = i + 1
+	if good is True:
 
-	o.close()
+		while i <= tot:
+
+			l = linecache.getline(list,i)
+			if debug is True:
+
+				print l
+
+			sel = l.split()
+			sel = sel[0]
+
+			sel = int(sel) + 1
+
+			new = linecache.getline(f,sel)
+
+			line = new.split()
+			o.write('%s             %s              %s              %s\n' %(line[0],line[1],line[2],line[3]))
+			i = i + 1
+
+		o.close()
 
 if __name__ == "__main__":
      params=setupParserOptions()

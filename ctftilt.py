@@ -7,13 +7,13 @@ stack1 = 'stack00'		#stack name for untilted particles
 stack2 = 'stack01'		#stack name for tilted particles
 
 #Inputs
-shrink = 4			#Binning factor for final particle stack
-new = 64			#Box size for binned particles
+shrink = 2			#Binning factor for final particle stack
+new = 128			#Box size for binned particles
 scale = 4			#Binning factor used for micrograph from which the particles were picked
 
 #CTFTILT inputs
-parm3 = "2.2,120.0,0.2,99993,15,2\n" # !CS[mm],HT[kV],AmpCnst,XMAG,DStep[um]
-parm4 = "128,400.0,8.0,2000.0,30000.0,500.0,30,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep
+parm3 = "2.2,120.0,0.07,80000,12.03141,2\n" # !CS[mm],HT[kV],AmpCnst,XMAG,DStep[um]
+parm4 = "128,400.0,8.0,2000.0,35000.0,500.0,30,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep
 
 #############		Script		###############
 
@@ -25,7 +25,7 @@ import glob
 
 p1 = open(paramOUT1,'wa')
 p2 = open(paramOUT2,'wa')
-cmd = "/opt/qb3/frealign-9.02/bin/ctftilt.exe"
+cmd = "/users/glander/myami_latest/appion/bin/ctftilt64.exe"
 
 #syntax: grep(regexp_string,list_of_strings_to_search)
 def grep(string,list):
@@ -34,9 +34,13 @@ def grep(string,list):
 
 list = glob.glob('*en_00.mrc')
 
+micro  = 1
+particle1 = 1
+particle2 = 1
+
 for file in list: 
-	tmp1 = re.sub("_00_","_01_",file)
-       	tiltname = re.sub("en_00","en_01",tmp1) 
+        tmp1 = re.sub("_00_","_01_",file)
+        tiltname = re.sub("en_00","en_01",tmp1)       
        	#Check if both files exist
 	if os.path.isfile(file) & os.path.isfile(tiltname):
                	a = subprocess.Popen(cmd, -1, stdin=subprocess.PIPE,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -52,7 +56,8 @@ for file in list:
         
         	while i <= tot:
 	
-			p1.write('%s		%s		%s		%s\n' %(out3[0],out3[1],out3[2],out3[4]))
+			p1.write('%s		%s		%s		%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],str(particle1),str(micro)))
+			particle1 = particle1 + 1
 			i = i + 1
 
 		cmd2 = 'batchboxer input=%s.mrc dbbox=%s.box scale=%s output=%s.img' %(fname,fname,scale,stack1)
@@ -71,20 +76,23 @@ for file in list:
 
                 while i <= tot:
 
-                        p2.write('%s    	%s      	%s      	%s\n' %(out3[0],out3[1],out3[2],out3[4]))
+                        p2.write('%s    	%s      	%s      	%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],str(particle2),str(micro)))
+			particle2 = particle2 + 1
                         i = i + 1
 
                 cmd2 = 'batchboxer input=%s.mrc dbbox=%s.box scale=%s output=%s.img' %(fname,fname,scale,stack2)
                 subprocess.Popen(cmd2,shell=True).wait()
 
-cmd3 = 'proc2d %s.img %s_dc4.img meanshrink=%s' %(stack1,stack1,shrink)
+		micro = micro + 1
+
+cmd3 = 'proc2d %s.img %s_dc%01d.img meanshrink=%s' %(stack1,stack1,float(shrink),shrink)
 subprocess.Popen(cmd3,shell=True).wait()
 
-cmd4 = 'proc2d %s_dc4.img %s_dc4_%03d.img clip=%s edgenorm=0,1' %(stack1,stack1,float(new),new)
+cmd4 = 'proc2d %s_dc%01d.img %s_dc%01d_%03d.img clip=%s edgenorm=0,1' %(stack1,float(shrink),stack1,float(shrink),float(new),new)
 subprocess.Popen(cmd4,shell=True).wait()
 
-cmd3 = 'proc2d %s.img %s_dc4.img meanshrink=%s' %(stack2,stack2,shrink)
+cmd3 = 'proc2d %s.img %s_dc%01d.img meanshrink=%s' %(stack2,stack2,float(shrink),shrink)
 subprocess.Popen(cmd3,shell=True).wait()
 
-cmd4 = 'proc2d %s_dc4.img %s_dc4_%03d.img clip=%s edgenorm=0,1' %(stack2,stack2,float(new),new)
+cmd4 = 'proc2d %s_dc%01d.img %s_dc%01d_%03d.img clip=%s edgenorm=0,1' %(stack2,float(shrink),stack2,float(shrink),float(new),new)
 subprocess.Popen(cmd4,shell=True).wait()
