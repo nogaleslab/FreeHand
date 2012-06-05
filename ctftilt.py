@@ -7,9 +7,9 @@ stack1 = 'stack00'		#stack name for untilted particles
 stack2 = 'stack01'		#stack name for tilted particles
 
 #Inputs
-shrink = 2			#Binning factor for final particle stack
-new = 128			#Box size for binned particles
-scale = 4			#Binning factor used for micrograph from which the particles were picked
+shrink = 4			#Binning factor for final particle stack
+new = 100			#Box size for binned particles
+scale = 8			#Binning factor used for micrograph from which the particles were picked
 
 #CTFTILT inputs
 parm3 = "2.2,120.0,0.07,80000,12.03141,2\n" # !CS[mm],HT[kV],AmpCnst,XMAG,DStep[um]
@@ -25,7 +25,7 @@ import glob
 
 p1 = open(paramOUT1,'wa')
 p2 = open(paramOUT2,'wa')
-cmd = "/users/glander/myami_latest/appion/bin/ctftilt64.exe"
+cmd = "/archive/glander/myami/appion/bin/ctftilt64.exe"
 
 #syntax: grep(regexp_string,list_of_strings_to_search)
 def grep(string,list):
