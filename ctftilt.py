@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+#This script expects that tilt pair micrographs are named in Leginon format.
+
 #Output filenames
 paramOUT1 = 'parameter_00.par'	#param filename for untilted particles
 paramOUT2 = 'parameter_01.par'	#param filename for tilted particles
@@ -13,7 +15,12 @@ scale = 8			#Binning factor used for micrograph from which the particles were pi
 
 #CTFTILT inputs
 parm3 = "2.2,120.0,0.07,80000,12.03141,2\n" # !CS[mm],HT[kV],AmpCnst,XMAG,DStep[um]
-parm4 = "128,400.0,8.0,2000.0,35000.0,500.0,30,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep
+
+#Parameter inputs for 00.mrc micrographs
+parm4 = "128,400.0,8.0,2000.0,35000.0,500.0,-15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
+
+#Parameter inputs for 01.mrc micrographs
+parm5 = "128,400.0,8.0,2000.0,35000.0,500.0,15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
 
 #############		Script		###############
 
@@ -64,7 +71,7 @@ for file in list:
 		subprocess.Popen(cmd2,shell=True).wait()
 
 		a = subprocess.Popen(cmd, -1, stdin=subprocess.PIPE,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                [o,e] = a.communicate('%s\n'%(tiltname) + '%s.diag\n'%(tiltname) + parm3 + parm4)
+                [o,e] = a.communicate('%s\n'%(tiltname) + '%s.diag\n'%(tiltname) + parm3 + parm5)
                 out = grep("Final Values", o.split("\n"))
                 out2 = out[0]
                 out3 = out2.split()
