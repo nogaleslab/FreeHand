@@ -23,7 +23,6 @@ for line in f1:
 	if l[0] is 'C':	
 		
 		continue
-	
 	psi = float(l[1])
 	theta = float(l[2])
 	phi = float(l[3])

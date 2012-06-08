@@ -125,14 +125,15 @@ def getEMANPath():
                 emanpath = emanpath.replace("EMAN2DIR=","")                
         if os.path.exists(emanpath):                        
                 return emanpath        
-        print "EMAN2 was not found, make sure it is in your path"        
+        print "EMAN2 was not found, make sure eman2/2.0-rc3 is in your path"        
         sys.exit()
 
 def main(params):
 	
 	param = params['param']
 	out = params['out']
-
+	script = sys.argv[0]
+	cwd = '%s/lib'%(script[:-31]
         #Free hand angular search
         p8 = open(param,'r')
         fs1 = 'freeHand_ang_search'
@@ -157,7 +158,7 @@ def main(params):
 		i = 1
 		while i <= int(num):
 
-			cmd = '~michael/BATCHLIB/freeHand/mrc_to_im.b model%02d_plots_CC_v101_%s.mrc' %(m,i)
+			cmd = '%s/mrc_to_im.b model%02d_plots_CC_v101_%s.mrc' %(cwd,m,i)
 			subprocess.Popen(cmd,shell=True).wait()
 
 			cmd = 'proc2d model%02d_plots_CC_v101_%s.img model%02d_plots_CC_v101_merge.img' %(m,i,m)
@@ -165,13 +166,13 @@ def main(params):
 
 			i = i + 1
 
-		cmd = '~michael/BATCHLIB/freeHand/im_to_mrc.b model%02d_plots_CC_v101_merge.img' %(m)
+		cmd = '%s/im_to_mrc.b model%02d_plots_CC_v101_merge.img' %(cwd,m)
 		subprocess.Popen(cmd,shell=True).wait()
 
-	        cmd = 'cp ~michael/BATCHLIB/freeHand/totsumstack.exe .'
+	        cmd = 'cp %s/totsumstack.exe .' %(cwd)
 	        subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = 'cp ~michael/BATCHLIB/freeHand/totsumstack_mult.csh .'
+		cmd = 'cp %s/totsumstack_mult.csh .' %(cwd)
                 subprocess.Popen(cmd,shell=True).wait()
 	
 	        cmd = './totsumstack_mult.csh model%02d' %(m) 
@@ -180,10 +181,10 @@ def main(params):
 	        cmd = 'rm totsumstack.exe totsumstack_mult.csh'
 	        subprocess.Popen(cmd,shell=True).wait()
 
-	        cmd = '~michael/BATCHLIB/freeHand/npo_CC_wrap_mult.csh %s model%02d' %(str(float(angSearch)*2),m)
+	        cmd = '%s/npo_CC_wrap_mult.csh %s model%02d' %(cwd,str(float(angSearch)*2),m)
 	        subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = '~michael/BATCHLIB/freeHand/mrc_to_spi.b model%02d_plots_CC_v101_merge.mrc' %(m)
+		cmd = '%s/mrc_to_spi.b model%02d_plots_CC_v101_merge.mrc' %(cwd,m)
 		subprocess.Popen(cmd,shell=True).wait()
 	
 		cmd = 'mkdir %s' %(out)
@@ -203,14 +204,14 @@ def main(params):
 	
 		tot = EMUtil.get_image_count('%s/model%02d_plots_CC_v101_merge.img' %(out,m)) 	
 		n = int(angSearch)+1
-		stack = '%s/model%02d_plots_CC_v101_merge.spi' %(out,m)
+		stack = '%s/model%02d_plots_CC_v101_merge.spi' %(cwd,out,m)
 		peak(stack,tot,n)
 		m = m + 1
 
 	#cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed'
   	#subprocess.Popen(cmd,shell=True).wait()
 
-	cmd = "cp ~michael/BATCHLIB/freeHand/find_peaks_freeHand.spi %s" %(out)
+	cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
 	subprocess.Popen(cmd,shell=True).wait()
 
 if __name__ == "__main__":

@@ -102,7 +102,7 @@ def main(params):
 	ctf = params['ctf']
 	freParm = params['freParm']
 
-	script = sys.agrv[0]
+	script = sys.argv[0]
 	cwd = '%s/lib' %(script[:-26])
 
 	#Get parameter info: angular step
@@ -252,7 +252,8 @@ def main(params):
 	
 
 	#Convert parameter file format with CTF and angular info
-
+	if debug is True:
+		print '%s/make_freeHand_Param_fre.py %s %s %s %s' %(cwd,freParm,ctf,mag,pix)
 	cmd = '%s/make_freeHand_Param_fre.py %s %s %s %s' %(cwd,freParm,ctf,mag,pix)
 	subprocess.Popen(cmd,shell=True).wait()
 
