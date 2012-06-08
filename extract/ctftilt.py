@@ -45,12 +45,17 @@ micro  = 1
 particle1 = 1
 particle2 = 1
 
+o1 = open('micrograph_list.txt','w')
+
 for file in list: 
         tmp1 = re.sub("_00_","_01_",file)
         tiltname = re.sub("en_00","en_01",tmp1)       
        	#Check if both files exist
 	if os.path.isfile(file) & os.path.isfile(tiltname):
-               	a = subprocess.Popen(cmd, -1, stdin=subprocess.PIPE,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+               	
+		o1.write('%s	%s	%s\n' %(str(micro),file, tiltname))
+
+		a = subprocess.Popen(cmd, -1, stdin=subprocess.PIPE,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		[o,e] = a.communicate('%s\n'%(file) + '%s.diag\n'%(file) + parm3 + parm4)
 		out = grep("Final Values", o.split("\n"))
 		out2 = out[0]
