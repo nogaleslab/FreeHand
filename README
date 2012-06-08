@@ -5,9 +5,9 @@ Free-hand scripts were given to the Nogales lab from John Rubinstein at Universi
 _________________________________________
 
 Executable files (compiled on ubuntu) provided by John Rubinstein:
-'fastfreehand_v1_01.csh' - C-Sell script that calls 'fastfreehand_v1_01.exe,' to run free-hand test
-'totsumstack.csh' - C-Shell script that calls 'totsumstack.csh' to create average free-hand plot image
-'npo_CC.csh' - C-Shell script that calls CCP4 commands to create free-hand contour plot
+'lib/fastfreehand_v1_01.csh' - C-Sell script that calls 'fastfreehand_v1_01.exe,' to run free-hand test
+'lib/totsumstack.csh' - C-Shell script that calls 'totsumstack.csh' to create average free-hand plot image
+'lib/npo_CC.csh' - C-Shell script that calls CCP4 commands to create free-hand contour plot
 
 _________________________________________
 
