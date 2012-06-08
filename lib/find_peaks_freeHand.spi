@@ -1,0 +1,38 @@
+;;;;;;
+
+FR
+?Input stack of CC images? <stack>
+
+RR [tot]
+?Number of images in stack?
+
+RR [cent]
+?Center image pixel?
+
+;;;;;;;
+
+SD IC NEW
+incore
+2,[tot]
+
+do lb1 [part]=1,[tot]
+
+	PK [x] [y] 
+	<stack>@{*****[part]}
+	1,1
+	
+	[newX] = [cent]+[x]
+	[newY] = ([cent]+[y])
+	
+	SD IC [part] [newX] [newY] 
+	incore
+lb1
+
+SD IC COPY
+incore
+<stack>_peak
+
+SD ICE
+incore
+
+en d
