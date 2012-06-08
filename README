@@ -1,6 +1,6 @@
 These scripts are used for calculating the free-hand test for single particles in electron microscopy images, implementing protocols developed by Rosenthal &  Henderson, 2003, J. Mol. Biol.  
 
-Free-hand scripts were given to the Nogales lab from John Rubinstein at University of Toronto.  
+Free-hand scripts were given to the Nogales lab from John Rubinstein at University of Toronto. 
 
 _________________________________________
 
@@ -30,3 +30,6 @@ Input parameter info:
 
 Visualize per-particle angle assignment
 'fhplot.m' - MATLAB script to plot individual particle free-hand angles
+
+
+
