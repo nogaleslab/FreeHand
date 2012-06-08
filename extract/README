@@ -1,4 +1,7 @@
 Scripts used in particle picking and extracting.
 
-'create_tiltSelFiles.py' - create tilt pair select file for XMIPP
-'ctftilt.py' - extract particles with box files, calculating & outputing tilt angles for each particle
+'create_tiltSelFiles.py' - create tilt pair select file for XMIPP.
+
+'ctftilt.py' - extract particles with box files, calculating & outputing tilt angles for each particle.
+
+'ctftilt_ace2_weiner.py' - same as ctftilt.py except applies ace2 weiner filter to micrograph before extracting particles
