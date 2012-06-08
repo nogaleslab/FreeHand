@@ -61,7 +61,7 @@ def getEMANPath():
                 emanpath = emanpath.replace("EMAN2DIR=","")                
         if os.path.exists(emanpath):                        
                 return emanpath        
-        print "EMAN2 was not found, make sure it is in your path"        
+        print "EMAN2 was not found, make sure eman2/2.0-rc3  is in your path"        
         sys.exit()
 
 def getOPENMPIPath():        
@@ -101,6 +101,9 @@ def main(params):
 	model = params['model']
 	ctf = params['ctf']
 	freParm = params['freParm']
+
+	script = sys.agrv[0]
+	cwd = '%s/lib' %(script[:-26])
 
 	#Get parameter info: angular step
 	p = open(param,'r')
@@ -250,7 +253,7 @@ def main(params):
 
 	#Convert parameter file format with CTF and angular info
 
-	cmd = '~michael/BATCHLIB/freeHand/make_freeHand_Param_fre.py %s %s %s %s' %(freParm,ctf,mag,pix)
+	cmd = '%s/make_freeHand_Param_fre.py %s %s %s %s' %(cwd,freParm,ctf,mag,pix)
 	subprocess.Popen(cmd,shell=True).wait()
 
 	#Convert model from SPIDER to MRC
@@ -258,7 +261,7 @@ def main(params):
 
 	#Convert tilted particles to 3D-MRC format
 
-	cmd = '~michael/BATCHLIB/freeHand/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(tilt,tot,box)  
+	cmd = '%s/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(cwd,tilt,tot,box)  
 	subprocess.Popen(cmd,shell=True).wait()
 
 	#Run Free-Hand test
@@ -291,7 +294,7 @@ def main(params):
 			last = str(tot)
 			
 
-		cmd = '~michael/BATCHLIB/freeHand/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
+		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(cwd,pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
 		subprocess.Popen(cmd,shell=True)
 		i = i + float(incr)
 		iteration = iteration + 1
