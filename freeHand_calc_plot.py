@@ -160,7 +160,7 @@ def main(params):
 	m = 0
 
 	script = sys.argv[0]
-	cwd = script[:-22]
+	cwd = '%s/lib' %(script[:-22])
 	
 	while m < mods:
 

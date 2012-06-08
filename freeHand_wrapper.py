@@ -104,7 +104,7 @@ def main(params):
 
 	#Get current working directory
 	script = sys.argv[0]
-	cwd = script[:-20]
+	cwd = '%s/lib' %(script[:-20])
 
 	#Get parameter info: angular step
 	p = open(param,'r')
@@ -279,15 +279,15 @@ def main(params):
 	if num_mod == 1:
 		
 		if debug is True:
-			print '%s/run_freehand.sh start.hdf %s %s %s %s %s %s %s' %(cwd,model,str(sx),str(ang),str(rad),str(snr),str(ts),str(cutoff))
+			print '%s/run_freehand.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,str(sx),str(ang),str(rad),str(snr),str(ts),str(cutoff),cwd)
 
-		cmd = '%s/run_freehand.sh start.hdf %s %s %s %s %s %s %s' %(cwd,model,str(sx),str(ang),str(rad),str(snr),str(ts),str(cutoff))
+		cmd = '%s/run_freehand.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,str(sx),str(ang),str(rad),str(snr),str(ts),str(cutoff),cwd)
                	subprocess.Popen(cmd,shell=True).wait()
 	else:
 		if debug is True:
-			print '%s/run_freehand_sort.sh start.hdf %s %s %s %s %s %s %s' %(cwd,model,sx,ang,rad,snr,ts,cutoff)
+			print '%s/run_freehand_sort.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,sx,ang,rad,snr,ts,cutoff,cwd)
 	
-		cmd = '%s/run_freehand_sort.sh start.hdf %s %s %s %s %s %s %s' %(cwd,model,sx,ang,rad,snr,ts,cutoff)
+		cmd = '%s/run_freehand_sort.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,sx,ang,rad,snr,ts,cutoff,cwd)
 		subprocess.Popen(cmd,shell=True).wait()		
 
 	paramout = 'paramout_%03d_00' %(int(ang))
