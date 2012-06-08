@@ -17,10 +17,10 @@ scale = 8			#Binning factor used for micrograph from which the particles were pi
 parm3 = "2.2,120.0,0.07,80000,12.03141,2\n" # !CS[mm],HT[kV],AmpCnst,XMAG,DStep[um]
 
 #Parameter inputs for 00.mrc micrographs
-parm4 = "128,400.0,8.0,2000.0,35000.0,500.0,-15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
+parm4 = "128,400.0,8.0,2000.0,35000.0,500.0,0,-15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
 
 #Parameter inputs for 01.mrc micrographs
-parm5 = "128,400.0,8.0,2000.0,35000.0,500.0,15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
+parm5 = "128,400.0,8.0,2000.0,35000.0,500.0,0,15,5\n" #!Box,ResMin[A],ResMax[A],dFMin[A],dFMax[A],FStep,Expected angle, step size
 
 #############		Script		###############
 
