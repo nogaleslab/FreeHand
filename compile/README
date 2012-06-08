@@ -1,1 +1,6 @@
-Scripts used for compiling fastFreeHand scripts
+Scripts used for compiling fastFreeHand scripts.
+
+To compile on ubuntu:
+
+module load mrc
+./f90c_ubuntu64simple.csh [fortran script].f90
