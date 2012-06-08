@@ -271,7 +271,7 @@ def main(params):
                         m = m + 1
 
 	
-		cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed'
+		cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed *00.*'
   		subprocess.Popen(cmd,shell=True).wait()
 
 		cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
