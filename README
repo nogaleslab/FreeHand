@@ -29,5 +29,13 @@ Input parameter info:
 'free_param.par' - necessary input file for 'freeHand_wrapper.py' and 'freeHand_calc_plot.py' 
 
 Visualize per-particle angle assignment
-'fhplot.m' - MATLAB script to plot individual particle free-hand angles
+'lib/fhplot.m' - MATLAB script to plot individual particle free-hand angles
+
+_________________________________________
+
+Information on compiling 'fastfreehand' can be found in /compile
+
+_________________________________________
+
+Information for picking tilting particles and calcualting tilt angles can be found in /extract
 
