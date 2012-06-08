@@ -109,7 +109,9 @@ def main(params):
 	angular = params['ang']
 	shift = params['shift']
 	sel = params['select']
-
+	
+	script = sys.argv[0]
+	cwd ='%s/lib' %(script[:-21]) 
 
 	#Get parameter info: angular step
 	p = open(param,'r')
@@ -258,15 +260,15 @@ def main(params):
 	
 	if debug is True:
 
-		print '~michael/BATCHLIB/freeHand/make_freeHand_Param_spi.py %s %s %s %s %s %s' %(angular,shift,sel,ctf,mag,pix)
+		print '%s/make_freeHand_Param_spi.py %s %s %s %s %s %s' %(cwd,angular,shift,sel,ctf,mag,pix)
 
 	#Convert parameter file format with CTF and angular info
-	cmd = '~michael/BATCHLIB/freeHand/make_freeHand_Param_spi.py %s %s %s %s %s %s' %(angular,shift,sel,ctf,mag,pix)
+	cmd = '%s/make_freeHand_Param_spi.py %s %s %s %s %s %s' %(cwd,angular,shift,sel,ctf,mag,pix)
 	subprocess.Popen(cmd,shell=True).wait()
 
 	#Convert model from SPIDER to MRC
 
-	cmd = '~michael/BATCHLIB/freeHand/3D_spi_to_3D_mrc.b %s' %(model)
+	cmd = '%s/3D_spi_to_3D_mrc.b %s' %(cwd,model)
         subprocess.Popen(cmd,shell=True).wait()
 
 	#Select tilted particles
@@ -279,7 +281,7 @@ def main(params):
 
 	#Convert tilted particles to 3D-MRC format
 
-	cmd = '~michael/BATCHLIB/freeHand/imagic_to_freeHand2.py -f %s_sel.img --total=%s --box=%s' %(tilt[:-4],countP,box)  
+	cmd = '%s/imagic_to_freeHand2.py -f %s_sel.img --total=%s --box=%s' %(cwd,tilt[:-4],countP,box)  
 	subprocess.Popen(cmd,shell=True).wait()
 
 	#Run Free-Hand test
@@ -316,9 +318,9 @@ def main(params):
 			
 		if debug is True:
 
-			print '~michael/BATCHLIB/freeHand/fastFreeHand_wrapper.csh %s %s %s %s %s_sel.mrc %s.mrc %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(pix,snr,cs,volt,tilt[:-4],model[:-4],ctf[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
+			print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_sel.mrc %s.mrc %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(cwd,pix,snr,cs,volt,tilt[:-4],model[:-4],ctf[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
 
-		cmd = '~michael/BATCHLIB/freeHand/fastFreeHand_wrapper.csh %s %s %s %s %s_sel.mrc %s.mrc %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(pix,snr,cs,volt,tilt[:-4],model[:-4],ctf[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
+		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_sel.mrc %s.mrc %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(cwd,pix,snr,cs,volt,tilt[:-4],model[:-4],ctf[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
 		subprocess.Popen(cmd,shell=True)
 		i = i + float(incr)
 		iteration = iteration + 1

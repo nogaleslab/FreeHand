@@ -132,6 +132,8 @@ def main(params):
 	
 	param = params['param']
 	out = params['out']
+	script = sys.argv[0]
+	cwd = '%s/lib' %(script[:-26])
 
         #Free hand angular search
         p8 = open(param,'r')
@@ -157,7 +159,7 @@ def main(params):
 		i = 1
 		while i <= int(num):
 
-			cmd = '~michael/BATCHLIB/freeHand/mrc_to_im.b model%02d_plots_CC_v101_%s.mrc' %(m,i)
+			cmd = '%s/mrc_to_im.b model%02d_plots_CC_v101_%s.mrc' %(cwd,m,i)
 			subprocess.Popen(cmd,shell=True).wait()
 
 			cmd = 'proc2d model%02d_plots_CC_v101_%s.img model%02d_plots_CC_v101_merge.img' %(m,i,m)
@@ -165,13 +167,13 @@ def main(params):
 
 			i = i + 1
 
-		cmd = '~michael/BATCHLIB/freeHand/im_to_mrc.b model%02d_plots_CC_v101_merge.img' %(m)
+		cmd = '%s/im_to_mrc.b model%02d_plots_CC_v101_merge.img' %(cwd,m)
 		subprocess.Popen(cmd,shell=True).wait()
 
-	        cmd = 'cp ~michael/BATCHLIB/freeHand/totsumstack.exe .'
+	        cmd = 'cp %s/totsumstack.exe .' %(cwd)
 	        subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = 'cp ~michael/BATCHLIB/freeHand/totsumstack_mult.csh .'
+		cmd = 'cp %s/totsumstack_mult.csh .' %(cwd)
                 subprocess.Popen(cmd,shell=True).wait()
 	
 	        cmd = './totsumstack_mult.csh model%02d' %(m) 
@@ -180,10 +182,10 @@ def main(params):
 	        cmd = 'rm totsumstack.exe totsumstack_mult.csh'
 	        subprocess.Popen(cmd,shell=True).wait()
 
-	        cmd = '~michael/BATCHLIB/freeHand/npo_CC_wrap_mult.csh %s model%02d' %(str(float(angSearch)*2),m)
+	        cmd = '%s/npo_CC_wrap_mult.csh %s model%02d' %(cwd,str(float(angSearch)*2),m)
 	        subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = '~michael/BATCHLIB/freeHand/mrc_to_spi.b model%02d_plots_CC_v101_merge.mrc' %(m)
+		cmd = '%s/mrc_to_spi.b model%02d_plots_CC_v101_merge.mrc' %(cwd,m)
 		subprocess.Popen(cmd,shell=True).wait()
 	
 		cmd = 'mkdir %s' %(out)
@@ -210,7 +212,7 @@ def main(params):
 	#cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed'
   	#subprocess.Popen(cmd,shell=True).wait()
 
-	cmd = "cp ~michael/BATCHLIB/freeHand/find_peaks_freeHand.spi %s" %(out)
+	cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
 	subprocess.Popen(cmd,shell=True).wait()
 
 if __name__ == "__main__":
