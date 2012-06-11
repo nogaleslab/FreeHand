@@ -25,7 +25,7 @@ def setupParserOptions():
 	parser.add_option("-s", action="store_true",dest="spider",default=False,
 		help="Flag if your original stack before converting to HDF format was a SPIDER stack OR if you used XMIPP normalization during APPION processing")
 	parser.add_option("-a", action="store_true",dest="free",default=False,
-		help="Flag if CTF info is from free-hand tilt parameter file")
+		help="Flag if CTF info is from free-hand tilt parameter file and there is no EMAN2 angle file")
 	parser.add_option("-d", action="store_true",dest="debug",default=False,
                 help="debug")
 	options,args = parser.parse_args()
@@ -58,7 +58,7 @@ def getEMANPath():
 		emanpath = emanpath.replace("EMAN2DIR=","")                
 	if os.path.exists(emanpath):                        
 		return emanpath        
-	print "EMAN2 was not found, make sure it is in your path"        
+	print "EMAN2 was not found, make sure eman2/2.0-rc3 is in your path"        
 	sys.exit()
 
 def getImagicVersion(imagicroot):
@@ -95,13 +95,54 @@ def Eman2Freali(az,alt,phi):
     return psi,theta,phi
 
 def main(params):
-			
-		parm=params['param']
+		free = params['free']
+		if free is False:
+			parm=params['param']
 		numMods = params['num']
 		mag = params['mag']
 		stack = params['stack']
 		debug = params['debug']
 		free = params['free']
+		ctf = params['ctf']
+		script = sys.argv[0]
+		cwd='%s'%(script[:-24])
+
+		if free is True:
+			numMods = 0 #To skip the below conversions
+			print '\n'
+			print 'Creating files for Free-hand test\n'
+			print '\n'			
+			f1 = open(ctf,'r')
+			tot = len(f1.readlines())
+			count2 = 1
+			out = open("free_hand_fre.par",'w')
+
+			print '\n'
+			print 'Making paramter file\n'
+			print '\n'
+
+			while count2 <= tot:
+	
+        	                ctf = linecache.getline(params['ctf'],count2)
+                	        if debug is True:
+					print 'Reading line %s in ctf file' %(count2)
+                                	print ctf
+	                        c = ctf.split()
+
+        	                micro = 1
+                	        df1 = float(c[0])
+                        	df2 = float(c[1])
+	                        astig = float(c[2])
+
+        	                out.write("%7d%8.3f%8.3f%8.3f%8.3f%8.3f%9.1f%6d%9.1f%9.1f%8.2f%7.2f%6.2f\n" %(count2,0,0,0,0,0,mag,micro,df1,df2,astig,0,0))
+                	        count2 = count2 + 1
+
+                        print "\n"
+                        print "Converting IMAGIC stack into FREALIGN particle stack..."
+                        print "\n"
+
+                        cmd="%s/imagic_to_3Dmrc.b %s" %(cwd,stack)
+                        subprocess.Popen(cmd,shell=True).wait()
 
 		if numMods == 1:
 			f=open(parm,'r')
@@ -194,7 +235,7 @@ def main(params):
 			print "Converting IMAGIC stack into FREALIGN particle stack..."
 			print "\n"
 
-			cmd="~michael/BATCHLIB/freeHand/imagic_to_3Dmrc.b %s_model1_norm.img" %(new)
+			cmd="%s/freeHand/imagic_to_3Dmrc.b %s_model1_norm.img" %(cwd,new)
 			subprocess.Popen(cmd,shell=True).wait()
 
 		if numMods == 2:
@@ -322,7 +363,7 @@ def main(params):
 			cmd="~michael/bin/imagic_to_frealign.b %s_model01_norm.img" %(new)
 			subprocess.Popen(cmd,shell=True).wait()	
 				
-			
+		
 
 if __name__ == "__main__":
      imagicroot = getIMAGICPath()
