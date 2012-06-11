@@ -105,6 +105,12 @@ def main(params):
 	script = sys.argv[0]
 	cwd = '%s/lib' %(script[:-26])
 
+        p18 = open(param,'r')
+        pp1 = 'calc'
+        pp2 = grep(pp1,p18)
+        pp3 = pp2.split()
+        calc = pp3[2]
+
 	#Get parameter info: angular step
 	p = open(param,'r')
 	a = 'angular' 
@@ -272,9 +278,9 @@ def main(params):
 	i = info.split()
 
 	#mag = i[6]
-	df1 = i[0]
-	df2 = i[1]
-	astig = i[2]
+	df1 = i[8]
+	df2 = i[9]
+	astig = i[10]
 
 	i = 1
 	iteration = 1
@@ -295,11 +301,12 @@ def main(params):
 			last = str(tot)
 			
 		if debug is True:
-			print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(cwd,pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res
-,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
+			print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
 
-		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00' %(cwd,pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration))
-		subprocess.Popen(cmd,shell=True)
+		if debug is False:
+			cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format.par %s %s %s %s %s %s %s %s %s %s %s %s model00 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,freParm[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
+			subprocess.Popen(cmd,shell=True)
+		#cmd= '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_%02d.mrc %s_%03d.mrc refine_eman2/%s_freeHand_format %s %s %s %s %s %s %s %s %s %s %s %s model%02d %s' %(cwd,pix,snr,cs,volt,tilt[:-4],mod_count,model[:-4],mod_count,paramout,angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),mod_count,calc)
 		i = i + float(incr)
 		iteration = iteration + 1
 	
