@@ -270,8 +270,10 @@ def main(params):
                         peak(stack,tot,n)
                         m = m + 1
 
-	
-		cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed *00.*'
+		cmd = 'mv *00.* %s' %(out)	
+		subprocess.Popen(cmd,shell=True).wait()
+
+		cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed '
   		subprocess.Popen(cmd,shell=True).wait()
 
 		cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
