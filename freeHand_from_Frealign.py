@@ -21,7 +21,7 @@ def setupParserOptions():
         parser.add_option("-p",dest="param",type="string", metavar="FILE",
                 help="Parameter file with refinement info (free_param.par)")
         parser.add_option("-c",dest="ctf",type="string", metavar="FILE",
-                help="Per-particle CTF info")
+                help="Per-particle CTF info for tilted stack")
         parser.add_option("-d", action="store_true",dest="debug",default=False,
                 help="debug")
         options,args = parser.parse_args()
