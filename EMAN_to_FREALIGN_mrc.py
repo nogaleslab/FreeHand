@@ -134,7 +134,7 @@ def main(params):
                         	df2 = float(c[1])
 	                        astig = float(c[2])
 
-        	                out.write("%7d%8.3f%8.3f%8.3f%8.3f%8.3f%9.1f%6d%9.1f%9.1f%8.2f%7.2f%6.2f\n" %(count2,0,0,0,0,0,mag,micro,df1,df2,astig,0,0))
+        	                out.write("%7d%8.3f%8.3f%8.3f%8.3f%8.3f%8.1f%6d%9.1f%9.1f%8.2f%7.2f%6.2f\n" %(count2,0,0,0,0,0,mag,micro,df1,df2,astig,0,0))
                 	        count2 = count2 + 1
 
                         print "\n"
