@@ -365,9 +365,9 @@ def main(params):
 		i = info.split()                
 
 		#mag = i[6]                
-		df1 = i[0]
-	        df2 = i[1]
-                astig = i[2]
+		df1 = i[8]
+	        df2 = i[9]
+                astig = i[10]
     
 	        i = 1
 	        
