@@ -30,15 +30,19 @@ incr = 13			# nprocs = tot/incr
 ###################################
 
 import subprocess
+import sys
+
+#Get current working directory
+script = sys.argv[0]
+cwd = '%s' %(script[:-25])
 
 i = 1
 while i <= tot:
 	n = i + incr
 	if n > tot:	
-		n = maxi	
+		n = tot	
 
-	cmd = 'search_fspace_v1_02.csh %f %f %f %f %f %f %s %f %f %f %f %f %f %s %s' %(i,n,apix,amp,cs,kv,model,ncheck,psi,sh,ri,rmax1,rmax2,stack,par)
-	print cmd
+	cmd = '%s/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' %(cwd,str(i),str(n),str(apix),str(amp),str(cs),str(kv),model,str(ncheck),str(psi),str(sh),str(ri),str(rmax1),str(rmax2),stack,par)
 	subprocess.Popen(cmd,shell=True)
 	i = i + incr + 1
 
