@@ -133,7 +133,7 @@ def main(params):
 	param = params['param']
 	out = params['out']
 	script = sys.argv[0]
-	cwd = '%s/lib'%(script[:-31]
+	cwd = '%s/lib'%(script[:-31])
         #Free hand angular search
         p8 = open(param,'r')
         fs1 = 'freeHand_ang_search'
