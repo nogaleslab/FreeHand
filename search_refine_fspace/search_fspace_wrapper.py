@@ -6,7 +6,7 @@
 
 model = 'vols_2b_mr_002.mrc'	#Model name (mrc format)
 stack = 'start.mrc'		#stack name (mrc format)
-par = 'listCTFvalues.par_format2' #parameter file
+par = 'listCTFvalues.par_format' #parameter file
 
 #Parameters
 apix = 6.02			#pixel size (A/pix)
@@ -23,8 +23,8 @@ rmax1 = 300			#low resolution limit (angstroms)
 rmax2 = 30			#high resolution limit (angstroms)
 
 #Number of processors
-tot = 100			#number of particle to refine
-incr = 13			# nprocs = tot/incr
+tot = 1000			#number of particle to refine
+incr = 130			# nprocs = tot/incr
 
 ###################################
 ###################################
@@ -43,6 +43,7 @@ while i <= tot:
 		n = tot	
 
 	cmd = '%s/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' %(cwd,str(i),str(n),str(apix),str(amp),str(cs),str(kv),model,str(ncheck),str(psi),str(sh),str(ri),str(rmax1),str(rmax2),stack,par)
+	print cmd 
 	subprocess.Popen(cmd,shell=True)
 	i = i + incr + 1
 

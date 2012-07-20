@@ -7,8 +7,9 @@ import sys
 
 f = sys.argv[1] 
 f1 = open(f,'r')
-fout = '%s_format' %(f)
+fout = '%s_format' %(f[:-4])
 o1 = open(fout,'a')
+mag = float(sys.argv[2])
 
 o1.write("C Frealign format parameter file created from Search_fspace parameter file\n")
 o1.write("C\n")
@@ -27,7 +28,6 @@ for line in f1:
 	shiftx = float(l[4])
 	shifty = float(l[5])
 
-	mag = float(l[6])
 	film=float(l[7])
 	
 	df1 = float(l[8])
