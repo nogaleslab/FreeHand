@@ -1,3 +1,5 @@
+#!/bin/csh 
+
 # psize (e.g 2.4),wgh (0.07),cs (2.0), akv (200.0) 
 # ctfexppart,ctfexpmod
 # inmap      ! input map
@@ -23,8 +25,9 @@ set rmax1 = $12
 set rmax2 = $13
 set stack = $14
 set par = $15
+set c = $16
 
-time search_fspace_v1_02.exe << eot
+time ${c}/search_fspace_v1_02.exe << eot
 $apix,$amp,$cs,$kv
 1,2
 $model

@@ -6,7 +6,7 @@
 
 model = 'vols_2b_mr_002.mrc'	#Model name (mrc format)
 stack = 'start.mrc'		#stack name (mrc format)
-par = 'listCTFvalues.par_format' #parameter file
+par = 'listCTFvalues_format' #parameter file
 
 #Parameters
 apix = 6.02			#pixel size (A/pix)
@@ -42,7 +42,7 @@ while i <= tot:
 	if n > tot:	
 		n = tot	
 
-	cmd = '%s/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' %(cwd,str(i),str(n),str(apix),str(amp),str(cs),str(kv),model,str(ncheck),str(psi),str(sh),str(ri),str(rmax1),str(rmax2),stack,par)
+	cmd = '%s/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' %(cwd,str(i),str(n),str(apix),str(amp),str(cs),str(kv),model,str(ncheck),str(psi),str(sh),str(ri),str(rmax1),str(rmax2),stack,par,cwd)
 	print cmd 
 	subprocess.Popen(cmd,shell=True)
 	i = i + incr + 1
