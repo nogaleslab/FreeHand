@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import time
 import optparse
 from sys import *
 import os,sys,re
@@ -20,9 +21,9 @@ def setupParserOptions():
                 help="3D model(s) for alignment (Single MRC volume)")
         parser.add_option("-p",dest="param",type="string", metavar="FILE",
                 help="Parameter file with refinement info (free_param.par)")
-        parser.add_option("-c",dest="ctf",type="string", metavar="FILE",
+        parser.add_option("-c",dest="ctf1",type="string", metavar="FILE",
                 help="Per-particle CTF info for UNTILTED particles")
-        parser.add_option("-e",dest="ctf",type="string", metavar="FILE",
+        parser.add_option("-e",dest="ctf2",type="string", metavar="FILE",
                 help="Per-particle CTF info for TILTED particles")
         parser.add_option("-d", action="store_true",dest="debug",default=False,
                 help="debug")
@@ -79,11 +80,12 @@ def main(params):
 	untilt = params['untilted']
 	tilt = params['tilted']
 	model = params['model']
-	ctf = params['ctf']
+	ctf1 = params['ctf1']
+	ctf2 = params['ctf2']
 
 	#Get current working directory
 	script = sys.argv[0]
-	cwd = '%s/lib' %(script[:-20])
+	cwd = '%s/lib' %(script[:-26])
 
 	#Get parameter info: angular step
 	p = open(param,'r')
@@ -232,13 +234,13 @@ def main(params):
 
         p18 = open(param,'r')
         pp1 = 'psi_step'
-        pp2 = grep(pp1,p17)
+        pp2 = grep(pp1,p18)
         pp3 = pp2.split()
         psi = pp3[2]
 
         p18 = open(param,'r')
         pp1 = 'ncheck'
-        pp2 = grep(pp1,p17)
+        pp2 = grep(pp1,p18)
         pp3 = pp2.split()
         ncheck = pp3[2]
 
@@ -252,7 +254,17 @@ def main(params):
                         print '%s/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(cwd,untilt,tot,box)
 
         cmd = '%s/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(cwd,untilt,tot,box)
-        #subprocess.Popen(cmd,shell=True).wait()
+        subprocess.Popen(cmd,shell=True).wait()
+
+	#Convert parameter file into freeHand format        
+	print '\n'
+        print 'Converting CTF info'
+        print '\n'
+
+	cmd = '%s/make_f_space_param2.py %s %s' %(cwd,ctf1,mag)
+	if debug is True:
+		print cmd
+	subprocess.Popen(cmd,shell=True).wait()
 
         #Run refinement
         print '\n'                
@@ -279,128 +291,115 @@ def main(params):
                         incr = int(incr) - (int(last)- int(tot))
                         last = str(tot)
 
-                cmd = '%s/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' %(cwd,first,last,pix,snr,cs,volt,model,ncheck,psi,sx,ri,min_res,max_res,stack,par,cwd)
+                cmd = '%s/../search_refine_fspace/search_fspace_v1_02.csh %s %s %s %s %s %s %s %s %s %s %s %s %s %s.mrc %s_format %s/../search_refine_fspace' %(cwd,first,last,pix,snr,cs,volt,model,ncheck,psi,sx,ri,min_res,max_res,untilt[:-4],ctf1[:-4],cwd)
 
 		if debug is True:
 			print cmd
-		#subprocess.Popen(cmd,shell=True).wait()
+		subprocess.Popen(cmd,shell=True)
 
-	sys.exit()
+		i = i + float(incr)
 
-	cmd = '%s/run_freehand.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,str(sx),str(ang),str(rad),str(snr),str(ts),str(cutoff),cwd)
-        subprocess.Popen(cmd,shell=True).wait()
+	#Waiting loop:
+	time.sleep(10)
+	f = '%s_format_%s_%s' %(ctf1[:-4],first,last)
+	fsize = 0
+	while fsize == 0:
 	
-	cmd = '%s/run_freehand_sort.sh start.hdf %s %s %s %s %s %s %s %s' %(cwd,model,sx,ang,rad,snr,ts,cutoff,cwd)
-	subprocess.Popen(cmd,shell=True).wait()		
+		test = os.path.exists(f)
+		if test is False:
+			print "Error, %s does not exist; must be bug in search_fspace" %(f)
+			sys.exit()
+	
+		fsize = os.path.getsize(f)
+		if debug is True:
+			print 'fsize = %s' %(fsize)
+		time.sleep(1)
 
-	paramout = 'paramout_%03d_00' %(int(ang))
-		
+	nex1=str(float(first)-11)
+	nex2=str(float(first)-1)
+
+        f = '%s_format_%s_%s' %(ctf1[:-4],nex1[:-2],nex2[:-2])
+        fsize = 0
+	while fsize == 0:
+
+                test = os.path.exists(f)
+                if test is False:
+                        print "Error, %s does not exist; must be bug in search_fspace" %(f)
+                        sys.exit()
+
+                fsize = os.path.getsize(f)
+                if debug is True:
+                        print 'fsize = %s, %s' %(fsize,f)
+                time.sleep(1)
+
+	time.sleep(10)
 	if debug is True:
-		print'%s/sort_parts_by_mod.py -f %s -p refine_eman2/%s -c %s --num=%s' %(cwd,tilt,paramout,ctf,num_mod)
+		print '========================================================Finished!'
+		print '==========================================================================================='
+	
+	tmp = str(float(incr)+1)
 
-	cmd = '%s/sort_parts_by_mod.py -f %s -p refine_eman2/%s -c %s --num=%s' %(cwd,tilt,paramout,ctf,num_mod)
+	cmd = '%s/../search_refine_fspace/combine_parfiles.py %s_format_ %s %s' %(cwd,ctf1[:-4],tot,tmp[:-2])
+	if debug is True:
+		print cmd
+	subprocess.Popen(cmd,shell=True).wait()	
+
+	cmd = 'rm %s_format_*_*' %(ctf1[:-4])
 	subprocess.Popen(cmd,shell=True).wait()
 
-	mod_count = 0
+	print '\n'                
+	print 'Converting files into free-hand format'                
+	print '\n'                
+
+	cmd = '%s/fspace_param_consolidate.py %s_format_merge.par %s' %(cwd,ctf1[:-4],ctf2)
+	subprocess.Popen(cmd,shell=True).wait()
 	
-	while mod_count < num_mod:
+	#Convert tilted particles to 3D-MRC format                
 
-		print 'Working on model %s' %(mod_count)
+	if debug is True:
+		print '%s/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(cwd,tilt,tot,box)
 			
-		print '\n'                
-		print 'Converting files into free-hand format'                
-		print '\n'                
-		paramout = 'paramout_%03d_00_model%02d' %(int(ang),mod_count)                
-	
-		if debug is True:
-			print '%s/EMAN_to_FREALIGN_fromParam_freeHand.py -p refine_eman2/%s' %(cwd,paramout)
-
-		cmd = '%s/EMAN_to_FREALIGN_fromParam_freeHand.py -p refine_eman2/%s' %(cwd,paramout)                
-		subprocess.Popen(cmd,shell=True).wait()                
-		
-		#Convert parameter file format with CTF and angular info                
-		cmd = '%s/make_freeHand_Param.py refine_eman2/%s_freeHand %s_model%02d.par %s' %(cwd,paramout,ctf[:-4],mod_count,mag)                
-		subprocess.Popen(cmd,shell=True).wait()                
-
-		#Convert model from HDF to MRC                
-				
-		if num_mod > 1:
-
-			if debug is True:
-				print '%s/e2proc3d_all.py %s %s' %(cwd,model,mod_count)
-
-			cmd = '%s/e2proc3d_all.py %s %s' %(cwd,model,mod_count)
-			subprocess.Popen(cmd,shell=True).wait()
-
-			cmd = 'rm %s_%03d.spi' %(model[:-4],mod_count)
-			subprocess.Popen(cmd,shell=True).wait()
-
-			cmd = 'mv %s_%03d_mr.spi %s_%03d.spi' %(model[:-4],mod_count,model[:-4],mod_count)
-			subprocess.Popen(cmd,shell=True).wait()
-
-		else:
-			if debug is True:
-				print 'cp %s %s_%03d.spi' %(model,model[:-4],mod_count)
-
-			cmd = 'cp %s %s_%03d.spi' %(model,model[:-4],mod_count)
-			subprocess.Popen(cmd,shell=True).wait()
-
-		if debug is True:
-			print '%s/3D_spi_to_3D_mrc.b %s_%03d.spi' %(cwd,model[:-4],mod_count)
-
-		cmd = '%s/3D_spi_to_3D_mrc.b %s_%03d.spi' %(cwd,model[:-4],mod_count)                
-		subprocess.Popen(cmd,shell=True).wait()                
-
-		tot = file_len('refine_eman2/%s' %(paramout)) 
-
-		#Convert tilted particles to 3D-MRC format                
-
-		if debug is True:
-			print '%s/imagic_to_freeHand2.py -f %s_%02d.img --total=%s --box=%s' %(cwd,tilt[:-4],mod_count,tot,box)
-			
-		cmd = '%s/imagic_to_freeHand2.py -f %s_%02d.img --total=%s --box=%s' %(cwd,tilt[:-4],mod_count,tot,box)                
-		subprocess.Popen(cmd,shell=True).wait()
+	cmd = '%s/imagic_to_freeHand2.py -f %s --total=%s --box=%s' %(cwd,tilt,tot,box)                
+	subprocess.Popen(cmd,shell=True).wait()
 
                
-		#Run Free-Hand test                
-		info = linecache.getline('refine_eman2/%s_freeHand_format' %(paramout),4)                
+	#Run Free-Hand test                
+	info = linecache.getline('%s_format' %(ctf2[:-4]),4)                
 
-		i = info.split()                
+	i = info.split()                
 
-		#mag = i[6]                
-		df1 = i[8]
-	        df2 = i[9]
-                astig = i[10]
+	#mag = i[6]                
+	df1 = i[8]
+        df2 = i[9]
+        astig = i[10]
     
-	        i = 1
-	        
-		iteration = 1 
+        i = 1
+        
+	iteration = 1 
 
-               	while i < int(tot): 
-                	last = str(i + float(incr)-1)  
-                        last = last[:-2] 
-                        if i == 1:
-                                 first = str(i) 
-                        else:
-                                 first = str(i)
-	                         first = first[:-2]
-                        if float(last) > int(tot): 
-                                 incr = int(incr) - (int(last)- int(tot))
-                                 last = str(tot)
+       	while i < int(tot): 
+               	last = str(i + float(incr)-1)  
+                last = last[:-2] 
+                if i == 1:
+ 	               first = str(i) 
+                else:
+                       first = str(i)
+	               first = first[:-2]
+                if float(last) > int(tot): 
+                       incr = int(incr) - (int(last)- int(tot))
+                       last = str(tot)
 
-			if debug is True:
-				print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_%02d.mrc %s_%03d.mrc refine_eman2/%s_freeHand_format %s %s %s %s %s %s %s %s %s %s %s %s model%02d %s' %(cwd,pix,snr,cs,volt,tilt[:-4],mod_count,model[:-4],mod_count,paramout,angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),mod_count,calc)
+		if debug is True:
+			print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format %s %s %s %s %s %s %s %s %s %s %s %s model01 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,ctf2[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
 				
 
-                        if debug is False:
-				cmd= '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_%02d.mrc %s_%03d.mrc refine_eman2/%s_freeHand_format %s %s %s %s %s %s %s %s %s %s %s %s model%02d %s' %(cwd,pix,snr,cs,volt,tilt[:-4],mod_count,model[:-4],mod_count,paramout,angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),mod_count,calc)
-                        	subprocess.Popen(cmd,shell=True)
+                if debug is False:
+			cmd= '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_%02d.mrc %s_%03d.mrc refine_eman2/%s_freeHand_format %s %s %s %s %s %s %s %s %s %s %s %s model%02d %s' %(cwd,pix,snr,cs,volt,tilt[:-4],mod_count,model[:-4],mod_count,paramout,angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),mod_count,calc)
+                       	subprocess.Popen(cmd,shell=True)
 
-       	                i = i + float(incr)
-               	        iteration = iteration + 1
+       	        i = i + float(incr)
+               	iteration = iteration + 1
 
-
-		mod_count = mod_count + 1
 
 if __name__ == "__main__":     
 	imagicroot = getIMAGICPath()     
