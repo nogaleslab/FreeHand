@@ -389,12 +389,12 @@ def main(params):
                        incr = int(incr) - (int(last)- int(tot))
                        last = str(tot)
 
+		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format %s %s %s %s %s %s %s %s %s %s %s %s model01 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,ctf2[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
+
 		if debug is True:
-			print '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format %s %s %s %s %s %s %s %s %s %s %s %s model01 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,ctf2[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
-				
+			print cmd	
 
                 if debug is False:
-			cmd= '%s/fastFreeHand_wrapper.csh %s %s %s %s %s_%02d.mrc %s_%03d.mrc refine_eman2/%s_freeHand_format %s %s %s %s %s %s %s %s %s %s %s %s model%02d %s' %(cwd,pix,snr,cs,volt,tilt[:-4],mod_count,model[:-4],mod_count,paramout,angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),mod_count,calc)
                        	subprocess.Popen(cmd,shell=True)
 
        	        i = i + float(incr)
