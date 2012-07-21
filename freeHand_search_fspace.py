@@ -389,7 +389,7 @@ def main(params):
                        incr = int(incr) - (int(last)- int(tot))
                        last = str(tot)
 
-		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format %s %s %s %s %s %s %s %s %s %s %s %s model01 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,ctf2[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
+		cmd = '%s/fastFreeHand_wrapper.csh %s %s %s %s %s.mrc %s %s_format %s %s %s %s %s %s %s %s %s %s %s %s model00 %s' %(cwd,pix,snr,cs,volt,tilt[:-4],model,ctf2[:-4],angSearch,min_res,max_res,str(float(pix)*float(rad)),first,last,incr,mag,df1,df2,astig,str(iteration),calc)
 
 		if debug is True:
 			print cmd	

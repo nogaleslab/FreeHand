@@ -170,9 +170,13 @@ def main(params):
 		while i <= int(num):
 
 			cmd = '%s/mrc_to_im.b model%02d_plots_CC_v101_%s.mrc' %(cwd,m,i)
+			if debug is True:
+				print cmd
 			subprocess.Popen(cmd,shell=True).wait()
 
 			cmd = 'proc2d model%02d_plots_CC_v101_%s.img model%02d_plots_CC_v101_merge.img' %(m,i,m)
+			if debug is True:
+				print cmd
 			subprocess.Popen(cmd,shell=True).wait()
 
 			i = i + 1
@@ -273,7 +277,7 @@ def main(params):
 		cmd = 'mv *00.* %s' %(out)	
 		subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = 'rm -r logfile* test.img test.hed *.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed '
+		cmd = 'rm -r logfile* test.img test.hed model??*.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed '
   		subprocess.Popen(cmd,shell=True).wait()
 
 		cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
