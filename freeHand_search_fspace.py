@@ -108,6 +108,7 @@ def main(params):
 	pix = pi[2]
 
 	#Radius
+	p = open(param,'r')
 	r = 'radius'
 	radiu = grep(r,p)
 	radi = radiu.split()

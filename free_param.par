@@ -5,15 +5,15 @@ num_part = 378			#total number of particles
 num_mod = 1			#Number of models
 snr = 0.07                      #Amplitude contrast:  0.20 for neg. stain; 0.07 for cryo
 radius = 32                     #Radius of your model (in pixels)
+shift = 2                       #Shift range (pixels)
 
 #EMAN2 specific inputs
 angular = 14			#EMAN2: Angular step for projection matching
-shift = 2			#EMAN2: Shift range
 ts = 0.5			#EMAN2: Shift step size
 cutoff = 0	                #EMAN2: Std. dev. for cutoff
 
 #search_fspace specific inputs
-ncheck = 10			#search_fspace: number of combinations of psi and theta to use for searching
+ncheck = 1000			#search_fspace: number of combinations of psi and theta to use for searching
 psi_step = 5			#search_fspace: Rotation degrees for searching psi
 
 #Free Hand test info
