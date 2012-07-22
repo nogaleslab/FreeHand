@@ -95,6 +95,7 @@ def main(params):
 	ang = aL[2]
 	
 	#Shift
+	p = open(param,'r')
 	s = 'shift'
 	shi = grep(s,p)
 	sh = shi.split()
@@ -205,6 +206,8 @@ def main(params):
         inc2 = grep(inc1,p13)
         inc3 = inc2.split()
         incr = inc3[2]
+	incr1 = incr
+	incr2 = incr
 
         #Free hand increment  
         p14 = open(param,'r')
@@ -302,43 +305,37 @@ def main(params):
 
 	#Waiting loop:
 	time.sleep(10)
-	f = '%s_format_%s_%s' %(ctf1[:-4],first,last)
-	fsize = 0
-	while fsize == 0:
+	i = 1
+
+	while i <= int(tot):
+
+		n = str(i + float(incr2) -1)
+		n = n[:-2]
+		if i == 1:
+			first = str(i)
+		else:
+			first = str(i)
+			first = first[:-2]
+			incr = incr2
+		if float(n) > int(tot):
+			incr = int(incr2) - (int(n)-int(tot))
+			n = str(tot)
+
+		f = '%s_format_%s_%s' %(ctf1[:-4],first,n)
+		fsize = 0
+		while fsize == 0:
 	
-		test = os.path.exists(f)
-		if test is False:
-			print "Error, %s does not exist; must be bug in search_fspace" %(f)
-			sys.exit()
+			test = os.path.exists(f)
+			if test is False:
+				print "Error, %s does not exist; must be bug in refine_fspace" %(f)
+				sys.exit()
 	
-		fsize = os.path.getsize(f)
-		if debug is True:
-			print 'fsize = %s' %(fsize)
-		time.sleep(1)
+			fsize = os.path.getsize(f)
+			time.sleep(1)
 
-	nex1=str(float(first)-incr)
-	nex2=str(float(first)-1)
-
-        f = '%s_format_%s_%s' %(ctf1[:-4],nex1[:-2],nex2[:-2])
-        fsize = 0
-	while fsize == 0:
-
-                test = os.path.exists(f)
-                if test is False:
-                        print "Error, %s does not exist; must be bug in search_fspace" %(f)
-                        sys.exit()
-
-                fsize = os.path.getsize(f)
-                if debug is True:
-                        print 'fsize = %s, %s' %(fsize,f)
-                time.sleep(1)
-
-	time.sleep(10)
-	if debug is True:
-		print '========================================================Finished!'
-		print '==========================================================================================='
-	
-	tmp = str(float(incr)+1)
+			if fsize > 0:
+				i = i + float(incr2) 
+	tmp = str(float(incr2)-1)
 
 	cmd = '%s/../search_refine_fspace/combine_parfiles.py %s_format_ %s %s' %(cwd,ctf1[:-4],tot,tmp[:-2])
 	if debug is True:
