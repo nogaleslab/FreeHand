@@ -315,7 +315,7 @@ def main(params):
 			print 'fsize = %s' %(fsize)
 		time.sleep(1)
 
-	nex1=str(float(first)-11)
+	nex1=str(float(first)-incr)
 	nex2=str(float(first)-1)
 
         f = '%s_format_%s_%s' %(ctf1[:-4],nex1[:-2],nex2[:-2])

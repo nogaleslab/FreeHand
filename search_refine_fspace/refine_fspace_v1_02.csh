@@ -1,4 +1,4 @@
-#!/bin/csh -x 
+#!/bin/csh  
 
 #READ (5,*)  psize,wgh,cs,akv
 #READ (5,*)  ctfexppart,ctfexpmod
@@ -38,5 +38,5 @@ $theta,$psi,$sh
 $first,$last,1
 $stack
 $par
-${par}_refined_${first}_${last}.par 
+${par}_refined_${first}_${last}
 eot
