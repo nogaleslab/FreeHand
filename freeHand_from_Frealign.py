@@ -120,6 +120,7 @@ def main(params):
 	
 	#Shift
 	s = 'shift'
+	p = open(param,'r')
 	shi = grep(s,p)
 	sh = shi.split()
 	sx = sh[2]
@@ -133,6 +134,7 @@ def main(params):
 
 	#Radius
 	r = 'radius'
+	p = open(param,'r')
 	radiu = grep(r,p)
 	radi = radiu.split()
 	rad = radi[2]
