@@ -4,7 +4,7 @@
 #	Refinement info		##
 ##################################
 
-model = 'protsub_pd256_dc.mrc'	#Model name (mrc format)
+model = 'prot_1.mrc'	#Model name (mrc format)
 stack = 'stack00_dc4_sel.mrc'	#stack name (mrc format)
 par = 'parameter_00_sel_format_merge.par' 	#parameter file
 
@@ -15,10 +15,10 @@ cs = 2.2			#Spherical aberration
 kv = 120			#Accelerating voltage
 
 #refine_fspace inputs
-thetaR = 60			#Theta constraint during refinement
+thetaR = 40			#Theta constraint during refinement
 psiR = 5			#psi constraint 
 shR = 5				#shift constraint 
-ri = 300			#radius for searching (ang)
+ri = 336			#radius for searching (ang)
 rmax1 = 300			#low resolution limit (angstroms)
 rmax2 = 20			#high resolution limit (angstroms)
 

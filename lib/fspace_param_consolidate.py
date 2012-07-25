@@ -42,8 +42,13 @@ while i <= tot:
 	df1 = float(l2[0])
 	df2 = float(l2[1])
 	astig = float(l2[2])
+	a = (l1[10])
+	test = '%s' %(a[-1:])
 
-	CC = float(l1[11])
+	if test == '*':
+		CC = 50
+	else:
+		CC = float(l1[11])
 
 	o1.write("%7d%8.3f%8.3f%8.3f%8.3f%8.3f%8.0f%6d%9.1f%9.1f%8.2f%7.2f\n" %(i,psi,theta,phi,shiftx,shifty,mag,film,df1,df2,astig,CC))
 
