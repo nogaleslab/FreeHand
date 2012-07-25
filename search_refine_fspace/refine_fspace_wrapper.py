@@ -15,12 +15,12 @@ cs = 2.2			#Spherical aberration
 kv = 120			#Accelerating voltage
 
 #refine_fspace inputs
-thetaR = 40			#Theta constraint during refinement
+thetaR = 30			#Theta constraint during refinement
 psiR = 5			#psi constraint 
 shR = 5				#shift constraint 
 ri = 336			#radius for searching (ang)
 rmax1 = 300			#low resolution limit (angstroms)
-rmax2 = 20			#high resolution limit (angstroms)
+rmax2 = 12			#high resolution limit (angstroms)
 
 #Number of processors
 tot = 86			#number of particle to refine
