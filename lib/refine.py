@@ -59,6 +59,7 @@ def main():
         parser.add_option("--maxit",    type="float",  default= 5,                  help="maximum number of iterations performed for each angular step (set to 5) ")
 	parser.add_option("--term",     type="float",  default= 95,                 help="When 95% of images has < 1 pixel error, move to next angular step")
         parser.add_option("--CTF",      action="store_true", default=False,         help="Consider CTF correction during the alignment ")
+	parser.add_option("--fourvar",  action="store_true", default=False,         help="compute Fourier variance")
         parser.add_option("--snr",      type="float",  default= 1.0,                help="Signal-to-Noise Ratio of the data")
         parser.add_option("--ref_a",    type="string", default= "S",                help="method for generating the quasi-uniformly distributed projection directions (default S)")
         parser.add_option("--sym",      type="string", default= "c1",               help="symmetry of the refined structure")
@@ -81,8 +82,10 @@ def main():
 	parser.add_option("--lmask",    type="float",   default= 240,               help="length of mask to apply along helix in Angstroms (default=240)")
 	parser.add_option("--ilmask",   type="float",   default= 50,                help="radius of inner mask to apply along helix in Angstroms (default=50)")
 	parser.add_option("--findseam",        action="store_true", default=False,         help="use for reconstructions that have a seam")
+	parser.add_option("--vertstep", type="float",   help="vertical step for vertical symmetry (in Angstroms)")
 	parser.add_option("--hpars",    type="string",  default= "-1",              help="twist rise for each volume (separate by spaces, not commas)")
 	parser.add_option("--hsearch",  type="string",  default= "73.0 170.0",      help="inner & outer radii for helical search (in Angstroms, default=73.0 170.0)")
+	parser.add_option("--wcmask",  type="string",   help="specifies an additional cylinder mask, specified as x, y, and cylinder radius in Angstroms")
         parser.add_option("--MPI",      action="store_true", default=False,         help="whether to use MPI version")
         parser.add_option("--debug",    action="store_true", default=False,         help="debug")
         (options, args) = parser.parse_args(arglist[1:])
@@ -107,10 +110,11 @@ def main():
                         global_def.BATCH = True
                         ali3d(args[0], args[1], args[2], mask, options.ir, options.ou, options.rs, options.xr,
                         options.yr, options.ts, options.delta, options.an,
-                        options.center, options.maxit, options.term, options.CTF, options.snr, options.ref_a, options.sym, 
+                        options.center, options.maxit, options.term, options.CTF, options.fourvar, options.snr, options.ref_a, options.sym, 
 			options.sort, options.cutoff, options.pix_cutoff,  options.two_tail, options.model_jump, options.restart, options.save_half,
-			options.protos, options.oplane, options.lmask, options.ilmask, options.findseam, options.hpars, options.hsearch,
-                        options.full_output, options.compare_repro, options.compare_ref_free, options.ref_free_cutoff, options.debug, options.recon_pad, options.MPI)
+			options.protos, options.oplane, options.lmask, options.ilmask, options.findseam, options.vertstep, options.hpars, options.hsearch,
+                        options.full_output, options.compare_repro, options.compare_ref_free, options.ref_free_cutoff,
+			options.wcmask, options.debug, options.recon_pad, options.MPI)
                         global_def.BATCH = False
 		if options.MPI:
 			from mpi import mpi_finalize

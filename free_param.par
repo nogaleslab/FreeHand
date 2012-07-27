@@ -1,18 +1,18 @@
 #General info
 pix = 6.02			#pixel size
 boxSize = 100			#box size
-num_part = 378			#total number of particles
-num_mod = 1			#Number of models
+num_part = 152			#total number of particles
+num_mod = 2			#Number of models
 snr = 0.07                      #Amplitude contrast:  0.20 for neg. stain; 0.07 for cryo
 radius = 32                     #Radius of your model (in pixels)
-shift = 2                       #Shift range (pixels)
+shift = 5                       #Shift range (pixels)
 
-#EMAN2 specific inputs
+#EMAN2 specific input
 angular = 14			#EMAN2: Angular step for projection matching
-ts = 0.5			#EMAN2: Shift step size
-cutoff = 0	                #EMAN2: Std. dev. for cutoff
+ts = 1				#EMAN2: Shift step size
+cutoff = 1	                #EMAN2: Std. dev. for cutoff
 
-#search_fspace specific inputs
+#search_fspace specific input
 ncheck = 1000			#search_fspace: number of combinations of psi and theta to use for searching
 psi_step = 5			#search_fspace: Rotation degrees for searching psi
 
@@ -20,10 +20,10 @@ psi_step = 5			#search_fspace: Rotation degrees for searching psi
 cs = 2.2			#Spherical abberration of microscope:  T12 = 6.2; T20 = 2.2
 volt = 120			#Accelerating voltage
 freeHand_ang_search = 45	#Angular search used for generating free-hand plot
-calc = C			#P - phase residual; C - cross correlation plots
-min_res = 300			#Low resolution cutoff
+calc = C			#P - phase residual; C - cross correlation plot
+min_res = 350			#Low resolution cutoff
 max_res = 30			#High resolution cutoff
 mag = 80000			#Magnification
 first = 1			#First particle
-last = 378			#Last particle
-incr = 48			#Increment for parallel processing:  # processors = last / incr
+last = 152			#Last particle
+incr = 18			#Increment for parallel processing:  # processors = last / incr

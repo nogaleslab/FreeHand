@@ -61,7 +61,7 @@ def getEMANPath():
                 emanpath = emanpath.replace("EMAN2DIR=","")                
         if os.path.exists(emanpath):                        
                 return emanpath        
-        print "EMAN2 was not found, make sure eman2/2.0-rc3 is in your path"        
+        print "EMAN2 was not found, make sure eman2/2.05 is in your path"        
         sys.exit()
 
 def getOPENMPIPath():        
@@ -94,7 +94,7 @@ def grep(string,list):
         if match != None:
             return match.string
 
-def main(params):
+def main2(params):
 	debug = params['debug']
 	param = params['param']
 	untilt = params['untilted']
@@ -408,6 +408,6 @@ if __name__ == "__main__":
 	from EMAN2 import *     
 	from sparx  import *     
 	params=setupParserOptions()     
-	main(params)
+	main2(params)
 
 
