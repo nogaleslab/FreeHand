@@ -13,7 +13,7 @@ import sys
 f = sys.argv[1]
 num=float(sys.argv[2])
 
-new=f.strip('.hdf')
+new=f[:-4]
 
 cmd="e2proc3d.py --first=%01d --last=%01d %s %s_%03d.hdf" %(num,num,f,new,num)
 subprocess.Popen(cmd,shell=True).wait()
