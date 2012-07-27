@@ -127,10 +127,10 @@ def getEMANPath():
                 emanpath = emanpath.replace("EMAN2DIR=","")                
         if os.path.exists(emanpath):                        
                 return emanpath        
-        print "EMAN2 was not found, make sure eman2/2.0-rc3 is in your path"        
+        print "EMAN2 was not found, make sure eman2/2.05 is in your path"        
         sys.exit()
 
-def main(params):
+def main2(params):
 	
 	param = params['param']
 	out = params['out']
@@ -289,5 +289,5 @@ if __name__ == "__main__":
 	getEMANPath()
 	from EMAN2 import *
         params=setupParserOptions()
-        main(params)
+        main2(params)
 
