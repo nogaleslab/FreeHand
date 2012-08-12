@@ -62,7 +62,7 @@ def main(params):
 	bad2 = b1.readlines()
 
 	tot = len(f1.readlines())
-
+	tot2 = len(bad2)
 	i = 1
 
 	if bad is True:
@@ -83,8 +83,7 @@ def main(params):
 				continue
 
 			l = linecache.getline(f,i)
-			line = l.split()
-			o.write('%s		%s		%s		%s	%s	%s\n' %(line[0],line[1],line[2],line[3],line[4],line[5]))
+			o.write(l)
 
 			i = i + 1
 
@@ -92,7 +91,9 @@ def main(params):
 
 	if good is True:
 
-		while i <= tot:
+		if debug is True:
+			print 'Total # particles = %s' %(tot)
+		while i <= tot2:
 
 			l = linecache.getline(list,i)
 			if debug is True:
@@ -101,13 +102,12 @@ def main(params):
 
 			sel = l.split()
 			sel = sel[0]
-
+			if debug is True:
+				print sel
 			sel = int(sel) + 1
 
 			new = linecache.getline(f,sel)
-
-			line = new.split()
-			o.write('%s             %s              %s              %s\n' %(line[0],line[1],line[2],line[3]))
+			o.write(new)
 			i = i + 1
 
 		o.close()

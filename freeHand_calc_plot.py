@@ -212,7 +212,7 @@ def main2(params):
 			subprocess.Popen(cmd,shell=True).wait()
 	
 			cmd = 'mkdir %s' %(out)
-	       		subprocess.Popen(cmd,shell=True).wait()
+		       	subprocess.Popen(cmd,shell=True).wait()
 	
 			cmd = 'mv model%02d_plots_CC_v101* %s/' %(m,out)
 		        subprocess.Popen(cmd,shell=True).wait()
@@ -250,8 +250,8 @@ def main2(params):
                         cmd = '%s/mrc_to_spi.b model%02d_plots_CC_v101_merge.mrc' %(cwd,m)
                         subprocess.Popen(cmd,shell=True).wait()
 
-                        cmd = 'mkdir %s' %(out)
-                        subprocess.Popen(cmd,shell=True).wait()
+			cmd = 'mkdir %s' %(out)
+                       	subprocess.Popen(cmd,shell=True).wait()
 
                         cmd = 'mv model%02d_plots_CC_v101* %s/' %(m,out)
                         subprocess.Popen(cmd,shell=True).wait()
@@ -277,11 +277,11 @@ def main2(params):
 		cmd = 'mv *00.* %s' %(out)	
 		subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = 'rm -r logfile* test.img test.hed model??*.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed '
-  		subprocess.Popen(cmd,shell=True).wait()
+	cmd = 'rm -r logfile* test.img test.hed model??*.mrc refine_eman2 z.plot start.hdf *_prep.img *_prep.hed '
+ 	subprocess.Popen(cmd,shell=True).wait()
 
-		cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
-		subprocess.Popen(cmd,shell=True).wait()
+	cmd = "cp %s/find_peaks_freeHand.spi %s" %(cwd,out)
+	subprocess.Popen(cmd,shell=True).wait()
 
 if __name__ == "__main__":
         imagicroot = getIMAGICPath()
