@@ -44,21 +44,21 @@ def setupParserOptions():
 #Inputs 
 def main(params):
 	f = params['param']
-	list = params['list']	#EMAN numbering scheme
+	list1 = params['list']	#EMAN numbering scheme
 	debug = params['debug']
 	fnew = f[:-4]
 	bad = params['bad']
 	good = params['good']
 	if debug is True:
 		print 'bad flag is %s' %(bad)
-		print 'particle list is %s' %(list)
+		print 'particle list is %s' %(list1)
 	fout = params['out']
 
 	o = open(fout,'w')
 
 	f1 = open(f,'r')
 
-	b1 = open(list,'r')
+	b1 = open(list1,'r')
 	bad2 = b1.readlines()
 
 	tot = len(f1.readlines())
@@ -68,7 +68,7 @@ def main(params):
 	if bad is True:
 
 		if debug is True:
-			print 'Bad particle list = %s' %(list)
+			print 'Bad particle list = %s' %(list1)
 
 		while i <= tot:
 		
@@ -76,12 +76,18 @@ def main(params):
 			if debug is True:
 				print 'Checking particle %s' %(n)
 
-			if n in bad2:
-				if debug is True:
-					print ('---------------------> Particle %s is excluded' %(i-1))
-				i = i + 1
-				continue
+			tmp = open(list1,'r')
+			for line in tmp:
+				l1 = line.split()
+				chk = l1[0]
+				if float(chk) == float(n):
+				
+					if debug is True:
+						print ('---------------------> Particle %s is excluded' %(i-1))
+					i = i + 1
+					continue
 
+			tmp.close()
 			l = linecache.getline(f,i)
 			o.write(l)
 
@@ -95,7 +101,7 @@ def main(params):
 			print 'Total # particles = %s' %(tot)
 		while i <= tot2:
 
-			l = linecache.getline(list,i)
+			l = linecache.getline(list1,i)
 			if debug is True:
 
 				print l
