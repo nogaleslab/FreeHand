@@ -68,7 +68,7 @@ for file in list:
         
         	while i <= tot:
 	
-			p1.write('%s		%s		%s		%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],str(particle1),str(micro)))
+			p1.write('%s		%s		%s		%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],oct3[5],str(particle1),str(micro)))
 			particle1 = particle1 + 1
 			i = i + 1
 
@@ -88,7 +88,7 @@ for file in list:
 
                 while i <= tot:
 
-                        p2.write('%s    	%s      	%s      	%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],str(particle2),str(micro)))
+                        p2.write('%s    	%s      	%s      	%s	%s	%s\n' %(out3[0],out3[1],out3[2],out3[4],out3[5],str(particle2),str(micro)))
 			particle2 = particle2 + 1
                         i = i + 1
 
