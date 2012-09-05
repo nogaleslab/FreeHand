@@ -26,4 +26,4 @@ max_res = 30			#High resolution cutoff
 mag = 80000			#Magnification
 first = 1			#First particle
 last = 152			#Last particle
-incr = 18			#Increment for parallel processing:  # processors = last / incr
+incr = 8			#Processors to use
