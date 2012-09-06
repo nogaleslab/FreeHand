@@ -804,7 +804,7 @@ def fastFree_run(params,cwd,mod):
                         incr = int(incr[:-2]) - (int(last)- int(tot))
                         last = str(tot)
 	
-		p6 = 'model00_plots_CC_v101_%02d.mrc\n' %(iteration)
+		p6 = 'model%02d_plots_CC_v101_%02d.mrc\n' %(mod,iteration)
 		p9 = '%s,%s\n' %(first,last)
 
 		ff_cmd ='#!/bin/csh\n'
@@ -950,6 +950,7 @@ def plotFH(params,ccp4_path,cwd):
 	param = params['param']
 	debug = params['debug']
 	model = params['model']
+	stack = params['tilted']
 
 	#Free hand increment  
         p15 = open(param,'r')
@@ -1073,10 +1074,10 @@ def plotFH(params,ccp4_path,cwd):
 	
 			tot = EMUtil.get_image_count('model%02d_plots_CC_v101_merge.img'%(mod)) 	
 			n = int(angSearch)+1
-			stack = 'model%02d_plots_CC_v101_merge.spi'%(mod)
-			peak(stack,tot,n)
+			stack1 = 'model%02d_plots_CC_v101_merge.spi'%(mod)
+			peak(stack1,tot,n)
 
-			cmd = 'rm model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.hed model%02d_plots_CC_v101_merge.spi model%02d_plots_CC_v101_??.*' %(mod,mod,mod,mod)
+			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 			subprocess.Popen(cmd,shell=True).wait()
 	
 		if calc is 'P':
@@ -1115,15 +1116,18 @@ def plotFH(params,ccp4_path,cwd):
 		        cmd = 'rm tmp.csh z.plot'
 		        subprocess.Popen(cmd,shell=True).wait()
 
-		        cmd = 'e2proc2d.py model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.spi --invert' %(mod,mod)
+			cmd = 'proc2d model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.img invert inplace' %(mod,mod)
+			subprocess.Popen(cmd,shell=True).wait()
+
+		        cmd = 'e2proc2d.py model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.spi' %(mod,mod)
 		        subprocess.Popen(cmd,shell=True).wait()
 
 		        tot = EMUtil.get_image_count('model00_plots_CC_v101_merge.img')  
 		        n = int(angSearch)+1
-		        stack = 'model%02d_plots_CC_v101_merge.spi'%(mod)
-		        peak(stack,tot,n)
+		        stack1 = 'model%02d_plots_CC_v101_merge.spi'%(mod)
+		        peak(stack1,tot,n)
 
-			cmd = 'rm model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.hed model%02d_plots_CC_v101_merge.spi model%02d_plots_CC_v101_??.*' %(mod,mod,mod,mod)
+			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 		        subprocess.Popen(cmd,shell=True).wait()
 
 		mod = mod + 2
@@ -1141,3 +1145,5 @@ if __name__ == "__main__":
 	eman2_conv(params,cwd)
 	fastFree(params,cwd)
 	plotFH(params,ccp4,cwd)
+	cmd = 'rm -r refine_eman2'
+	subprocess.Popen(cmd,shell=True).wait()
