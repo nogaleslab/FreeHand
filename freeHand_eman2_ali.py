@@ -28,6 +28,8 @@ def setupParserOptions():
                 help="Parameter file with refinement info (free_param.par)")
         parser.add_option("-c",dest="ctf",type="string",metavar="FILE",
 		help="CTF-information file for tilted particles")
+	parser.add_option("-a",action="store_true",dest="appion",default=False,
+                help="Flag if CTF-info comes from APPION")
 	parser.add_option("-d", action="store_true",dest="debug",default=False,
                 help="debug")
         options,args = parser.parse_args()
@@ -1167,7 +1169,7 @@ def plotFH(params,ccp4_path,cwd):
 			findPeak('model%02d_plots_CC_v101_merge.mrc' %(mod),'model%02d_peaks.txt' %(mod))
 			#scatter('model%02d_peaks.txt' %(mod),angSearch,tiltCenter,includedPercentTilt)
 			convertEPS_to_PNG('model%02d_average_frehand_CC.ps'%(mod),'model%02d_average_frehand_CC.png' %(mod))
-			os.remove('model%02d_average_frehand_CC.ps' %(mod))
+			#os.remove('model%02d_average_frehand_CC.ps' %(mod))
 
 			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 			subprocess.Popen(cmd,shell=True).wait()
@@ -1223,6 +1225,22 @@ def plotFH(params,ccp4_path,cwd):
 		        subprocess.Popen(cmd,shell=True).wait()
 
 		mod = mod + 2
+#===================
+def format_ctf(ctf):
+	#Appion files have a numbering scheme within the first column that needs to be removed
+
+	#Make backup version
+ 	cmd = 'cp %s %s_backup.par' %(ctf,ctf[:-4])
+	subprocess.Popen(cmd,shell=True).wait()
+
+	os.remove('%s' %(ctf))
+	ctfRead = open('%s_backup.par'%(ctf[:-4]),'r')
+	ctfOut = open('%s' %(ctf),'w')
+
+	for line in ctfRead:
+		l = line.split()
+		ctfOut.write('%s	%s	%s\n' %(l[1],l[2],l[3]))		
+	
 
 if __name__ == "__main__":     
 	getMYAMI()
@@ -1235,6 +1253,8 @@ if __name__ == "__main__":
 	params=setupParserOptions()     
 	checkConflicts(params)
 	cwd = '/archive/michael/lib/freeHand'
+        if params['appion'] is True:
+                format_ctf(params['ctf'])
 	align(params,cwd)
 	eman2_conv(params,cwd)
 	fastFree(params,cwd)
