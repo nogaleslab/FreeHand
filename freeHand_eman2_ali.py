@@ -587,7 +587,7 @@ def eman2_conv(params,cwd):
         mag = aL[2]
 
 	p = open(param,'r')
-        a = 'ang'
+        a = 'angular'
         angl = grep(a,p)
         aL = angl.split()
         ang = aL[2]
