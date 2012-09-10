@@ -20,6 +20,7 @@ psi_step = 5			#search_fspace: Rotation degrees for searching psi
 cs = 2.2			#Spherical abberration of microscope:  T12 = 6.2; T20 = 2.2
 volt = 120			#Accelerating voltage
 freeHand_ang_search = 45	#Angular search used for generating free-hand plot
+tilt_ang = 30			#Tilt angle (i.e. tilt angle in microscope)
 calc = C			#P - phase residual; C - cross correlation plot
 min_res = 350			#Low resolution cutoff
 max_res = 30			#High resolution cutoff

@@ -8,6 +8,11 @@ import glob
 import subprocess
 from os import system
 import linecache
+import numpy as np
+import matplotlib.pyplot as plt
+import Image
+import pylab 
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 #=========================
 def setupParserOptions():
@@ -93,6 +98,17 @@ def getEMANPath():
         if os.path.exists(emanpath):                        
                 return emanpath        
         print "EMAN2 was not found, make sure eman2/2.05 is in your path"        
+        sys.exit()
+
+#===========================
+def getMYAMI():
+	myamipath = subprocess.Popen("env | grep MYAMI", shell=True, stdout=subprocess.PIPE).stdout.read().strip()
+
+        if myamipath:
+                myamipath = myamipath.replace("MYAMI=","")
+        if os.path.exists(myamipath):
+                return myamipath
+        print "myami was not found, make sure myami is loaded"
         sys.exit()
 
 #========================
@@ -835,6 +851,8 @@ def fastFree_run(params,cwd,mod):
 
 		i = i + float(incr)
                	iteration = iteration + 1
+	iteration = iteration - 1
+	return iteration
 
 def fastFree(params,cwd):
 
@@ -850,25 +868,18 @@ def fastFree(params,cwd):
 	mod = 1
 	while mod <= num_mod:
 		mod = mod -1 
-		fastFree_run(params,cwd,mod)
-		wait(params)
+		iteration = fastFree_run(params,cwd,mod)
+		wait(params,iteration)
 		mod = mod + 2
 #===========	
-def wait(params):
+def wait(params,iteration):
 
         param = params['param']
         debug = params['debug']
 
-        #Free hand increment  
-        p13 = open(param,'r')
-        inc1 = 'incr'
-        inc2 = grep(inc1,p13)
-        inc3 = inc2.split()
-        procs = inc3[2]
-
         i = 1
 
-        while i<= int(procs):
+        while i<= iteration:
 
                 test = os.path.isfile('iteration%01d_finished'%(i))
 
@@ -885,65 +896,140 @@ def wait(params):
         cmd = 'rm iteration?_finished tmp* fastfreehand_v1_01.exe'
         subprocess.Popen(cmd,shell=True)
 
-#=================
-def peak(stack,tot,cent):
-	spifile = "currentSpiderScript.spi"
-       	if os.path.isfile(spifile):
-        	os.remove(spifile)
-       	spi=open(spifile,'w')
-	spicmd="SD IC NEW\n"
-	spicmd+="incore\n"
-	spicmd+="2,%s\n" %(tot)
-	spicmd+="do lb1 [part] = 1, %s\n" %(tot)
-	spicmd+="\n"
-	spicmd+="PK [x] [y]\n"
-	spicmd+="%s@{******[part]}\n"%(stack[:-4])
-	spicmd+="(1,0)\n"
-	spicmd+="[newX] = %s +[x]\n" %(cent)
-	spicmd+="[newY] = %s +[y]\n" %(cent)
-	spicmd+="SD IC [part] [newX] [newY]\n"
-	spicmd+="incore\n"
-	spicmd+="lb1\n"
-	spicmd+="SD IC COPY\n"
-	spicmd+="incore\n"
-	spicmd+="%s_peak\n" %(stack[:-4])
-	spicmd+="SD ICE\n"
-	spicmd+="incore\n"
-	spicmd+="en d\n"
-	runSpider(spicmd)
+#==============
+def findPeak(stack,peakfile):
+	if os.path.exists(peakfile):
+        	os.remove(peakfile)
+        out = open(peakfile,'w')
+        stackRead = mrc.read(stack)
+        number, ydim, xdim = stackRead.shape
+        for i in range(number):
+        	image = stackRead[i,:,:]
+                output = peakfinder.findPixelPeak(image, guess=None, limit=None, lpf=None)
+                coord = output['pixel peak']
+                out.write('%d   %s      %s\n' %(i,coord[0],coord[1]))
+	return out
+
+#==============
+def averageStack(stackfile,avgfile):
+               
+                a = mrc.read(stackfile)
+                a = np.sum(a,axis=0)
+                a = (a-a.min())/(a.max()-a.min())
+                mrc.write(a,avgfile)
+                return avgfile
+
+#==============
+def convertEPS_to_PNG(image,out):
+
+	im = Image.open(image)
+        im.rotate(-90).save(out)
 
 #===============
-def runSpider(lines):
-       spifile = "currentSpiderScript.spi"
-       if os.path.isfile(spifile):
-               os.remove(spifile)
-       spi=open(spifile,'w')
-       spi.write("MD\n")
-       spi.write("TR OFF\n")
-       spi.write("MD\n")
-       spi.write("VB OFF\n")
-       spi.write("MD\n")
-       spi.write("SET MP\n")
-       spi.write("(0)\n")
-       spi.write("\n")
-       spi.write(lines)
+def scatter(data,lim,tilt,include):
 
-       spi.write("\nEN D\n")
-       spi.close()
-       spicmd = "spider spi @currentSpiderScript"
-       spiout = subprocess.Popen(spicmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stderr.read()
-       output = spiout.strip().split()
-       if "ERROR" in output:
-               print "Spider Error, check 'currentSpiderScript.spi'\n"
-               sys.exit()
-       # clean up
-       os.remove(spifile)
-       if os.path.isfile("LOG.spi"):
-               os.remove("LOG.spi")
-       resultf = glob.glob("results.spi.*")
-       if resultf:
-               for f in resultf:
-                       os.remove(f)
+        tiltX = tilt[0]
+        tiltY = tilt[1]
+
+        loadData = np.loadtxt(data)
+        x = loadData[:,2]
+        y = loadData[:,1]
+
+        print x
+	print y
+	#Center peak vales at (0,0)
+        centx = np.subtract(x,lim)
+        centy = np.subtract(y,lim)
+
+        #Calculate distance of peaks from expected angle
+        dist = []
+        for i in xrange(len(loadData[:,1])):
+	        rx = centx[i]
+        	ry = centy[i]
+		print rx
+                distance = math.sqrt(((rx - tiltX)*(rx - tiltX)) + ((ry - tiltY)*(ry - tiltY))/2)
+                dist.append(distance)
+
+        newDist = sorted(dist)
+
+        numReadLines = round((float(include)/100)*len(loadData[:,1]))
+
+        includeRadius = []
+        for j in xrange(numReadLines):
+        	includeRadius = newDist[j]
+        #Create function for plotting circle
+        theta = np.linspace(0,2*math.pi)
+
+        incRadx = includeRadius*pylab.cos(theta)
+        incRady = includeRadius*pylab.sin(theta)
+
+        incRadx = pylab.add(incRadx,tiltX)
+        incRady = pylab.add(incRady,tiltY)
+
+        #Set radii for concentric circles       
+        rad1 = 10
+        rad2 = 20
+        rad3 = 30
+        rad4 = 40
+        rad5 = 50
+        rad6 = 60
+
+        #Create x,y coords for concentric cricles
+        cx1 = rad1*pylab.cos(theta)
+        cy1 = rad1*pylab.sin(theta)
+        cx2 = rad2*pylab.cos(theta)
+        cy2 = rad2*pylab.sin(theta)
+        cx3 = rad3*pylab.cos(theta)
+        cy3 = rad3*pylab.sin(theta)
+        cx4 = rad4*pylab.cos(theta)
+        cy4 = rad4*pylab.sin(theta)
+        cx5 = rad5*pylab.cos(theta)
+        cy5 = rad5*pylab.sin(theta)
+        cx6 = rad6*pylab.cos(theta)
+        cy6 = rad6*pylab.sin(theta)
+
+        #Create axes
+        line1 = np.linspace(-60,60,100)
+
+        #Create zeros array
+        line2 = []
+        i = 1
+        while i <= 100:
+                line2.append('0')
+		i = i + 1
+        fig = plt.figure(1)
+
+        scatter = plt.subplot(111,aspect='equal')
+        majorLocator = MultipleLocator(10)
+        majorFormatter = FormatStrFormatter('%d')
+        minorLocator = MultipleLocator(5)
+        scatter.set_xlabel('Tilt direction (degrees)',fontsize=15)
+        scatter.set_ylabel('Tilt direction (degrees)',fontsize=15)
+        scatter.set_title('%d'%(include) + '% ' + 'of particles are within %d degrees of expected angle'%(round(includeRadius)))
+        scatter.plot(cx1,cy1,c = 'k')
+        scatter.plot(cx2,cy2,c = 'k')
+        scatter.plot(cx3,cy3,c = 'k')
+        scatter.plot(cx4,cy4,c = 'k')
+        scatter.plot(cx5,cy5,c = 'k')
+        scatter.plot(cx6,cy6,c = 'k')
+        scatter.plot(cx5,cy5,c = 'k')
+        scatter.plot(incRadx,incRady,c = 'r')
+        scatter.plot(line2,line1,c='k')
+        scatter.plot(line1,line2,c='k')
+        scatter.scatter(centx,centy,marker='+',c='k',edgecolor='k',s=55)
+        majorLocator = MultipleLocator(10)
+        majorFormatter = FormatStrFormatter('%d')
+        minorLocator = MultipleLocator(5)
+        scatter.xaxis.set_major_locator(majorLocator)
+        scatter.xaxis.set_major_formatter(majorFormatter)
+        scatter.xaxis.set_minor_locator(minorLocator)
+        scatter.yaxis.set_major_locator(majorLocator)
+        scatter.yaxis.set_major_formatter(majorFormatter)
+        scatter.yaxis.set_minor_locator(minorLocator)
+        plt.xlim(-lim,lim)
+        plt.ylim(-lim,lim)
+	outFILE = '%s.png' %(data[:-4])
+        plt.savefig(outFILE,dpi=150,format='png')
 #===========
 def plotFH(params,ccp4_path,cwd):
 
@@ -968,9 +1054,18 @@ def plotFH(params,ccp4_path,cwd):
 
         p18 = open(param,'r')
         fs1 = 'calc'
-        fs2 = grep(fs1,p8)
+        fs2 = grep(fs1,p18)
         fs3 = fs2.split()
         calc = fs3[2]
+
+	p18 = open(param,'r')
+        fs1 = 'tilt_ang'
+        fs2 = grep(fs1,p18)
+        fs3 = fs2.split()
+        tilt_ang = int(fs3[2])
+
+	tiltCenter = [tilt_ang,0]
+	includedPercentTilt = 40
 
 	mod = 1
 
@@ -1003,10 +1098,8 @@ def plotFH(params,ccp4_path,cwd):
 		if debug is True:
 			print cmd
 		subprocess.Popen(cmd,shell=True).wait()
-	
-		cmd = 'cp %s/totsumstack.exe .' %(cwd)
-		if debug is True:
-		        print cmd
+
+		cmd = 'cp %s/totsumstack.exe .' %(cwd)	
 		subprocess.Popen(cmd,shell=True).wait()
 
 		totsum = '#!/bin/csh\n'
@@ -1033,6 +1126,8 @@ def plotFH(params,ccp4_path,cwd):
 		cmd = 'rm totsumstack.exe tmp.csh '
 		subprocess.Popen(cmd,shell=True).wait()
 	
+#		avgfile = averageStack('model%02d_plots_CC_v101_merge.mrc' %(mod),'model%02d_averageplot_CC_v101.mrc'%(mod)) 
+
 		if calc is 'C':
 
 			line1 = (float(angSearch)*2)/5
@@ -1067,15 +1162,12 @@ def plotFH(params,ccp4_path,cwd):
 			subprocess.Popen(cmd,shell=True).wait()
 
 			cmd = 'rm tmp.csh z.plot'
-			subprocess.Popen(cmd,shell=True).wait()
+			#subprocess.Popen(cmd,shell=True).wait()
 
-			cmd = 'e2proc2d.py model%02d_plots_CC_v101_merge.img model%02d_plots_CC_v101_merge.spi' %(mod,mod)
-			subprocess.Popen(cmd,shell=True).wait()
-	
-			tot = EMUtil.get_image_count('model%02d_plots_CC_v101_merge.img'%(mod)) 	
-			n = int(angSearch)+1
-			stack1 = 'model%02d_plots_CC_v101_merge.spi'%(mod)
-			peak(stack1,tot,n)
+			findPeak('model%02d_plots_CC_v101_merge.mrc' %(mod),'model%02d_peaks.txt' %(mod))
+			#scatter('model%02d_peaks.txt' %(mod),angSearch,tiltCenter,includedPercentTilt)
+			convertEPS_to_PNG('model%02d_average_frehand_CC.ps'%(mod),'model%02d_average_frehand_CC.png' %(mod))
+			os.remove('model%02d_average_frehand_CC.ps' %(mod))
 
 			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 			subprocess.Popen(cmd,shell=True).wait()
@@ -1133,6 +1225,8 @@ def plotFH(params,ccp4_path,cwd):
 		mod = mod + 2
 
 if __name__ == "__main__":     
+	getMYAMI()
+	from pyami import peakfinder,mrc
 	getEMANPath()             
 	getOPENMPIPath()
 	ccp4 = getCCP4Path()
