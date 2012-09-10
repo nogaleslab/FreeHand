@@ -1239,7 +1239,7 @@ def format_ctf(ctf):
 
 	for line in ctfRead:
 		l = line.split()
-		ctfOut.write('%s	%s	%s\n' %(l[1],l[2],l[3]))		
+		ctfOut.write('%f	%f	%s\n' %(float(l[1])*10000,float(l[2])*1000,l[3]))		
 	
 
 if __name__ == "__main__":     
