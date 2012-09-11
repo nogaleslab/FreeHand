@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import Image
 import pylab 
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+import math
 
 #=========================
 def setupParserOptions():
@@ -921,12 +922,6 @@ def averageStack(stackfile,avgfile):
                 mrc.write(a,avgfile)
                 return avgfile
 
-#==============
-def convertEPS_to_PNG(image,out):
-
-	im = Image.open(image)
-        im.rotate(-90).save(out)
-
 #===============
 def scatter(data,lim,tilt,include):
 
@@ -934,21 +929,17 @@ def scatter(data,lim,tilt,include):
         tiltY = tilt[1]
 
         loadData = np.loadtxt(data)
-        x = loadData[:,2]
+	x = loadData[:,2]
         y = loadData[:,1]
 
-        print x
-	print y
 	#Center peak vales at (0,0)
-        centx = np.subtract(x,lim)
-        centy = np.subtract(y,lim)
-
+        centx = np.subtract(x,float(lim))
+        centy = np.subtract(y,float(lim))
         #Calculate distance of peaks from expected angle
         dist = []
         for i in xrange(len(loadData[:,1])):
 	        rx = centx[i]
         	ry = centy[i]
-		print rx
                 distance = math.sqrt(((rx - tiltX)*(rx - tiltX)) + ((ry - tiltY)*(ry - tiltY))/2)
                 dist.append(distance)
 
@@ -1028,8 +1019,9 @@ def scatter(data,lim,tilt,include):
         scatter.yaxis.set_major_locator(majorLocator)
         scatter.yaxis.set_major_formatter(majorFormatter)
         scatter.yaxis.set_minor_locator(minorLocator)
-        plt.xlim(-lim,lim)
-        plt.ylim(-lim,lim)
+        lim1 = -float(lim)
+	plt.xlim(lim1,float(lim))
+        plt.ylim(lim1,float(lim))
 	outFILE = '%s.png' %(data[:-4])
         plt.savefig(outFILE,dpi=150,format='png')
 #===========
@@ -1167,9 +1159,7 @@ def plotFH(params,ccp4_path,cwd):
 			#subprocess.Popen(cmd,shell=True).wait()
 
 			findPeak('model%02d_plots_CC_v101_merge.mrc' %(mod),'model%02d_peaks.txt' %(mod))
-			#scatter('model%02d_peaks.txt' %(mod),angSearch,tiltCenter,includedPercentTilt)
-			convertEPS_to_PNG('model%02d_average_frehand_CC.ps'%(mod),'model%02d_average_frehand_CC.png' %(mod))
-			#os.remove('model%02d_average_frehand_CC.ps' %(mod))
+			scatter('model%02d_peaks.txt' %(mod),angSearch,tiltCenter,includedPercentTilt)
 
 			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 			subprocess.Popen(cmd,shell=True).wait()
