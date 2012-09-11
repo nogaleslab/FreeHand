@@ -457,12 +457,12 @@ def eman2_angConv(paramout,num_mod,ctf,mag,model,tilt,debug):
 			l = line.split()
 			if debug is True:
 				print l		
-			parmPSI = float(l[1])
-			parmTHETA = float(l[2])
-			parmPHI = float(l[3])
-			sx =(float(l[4]))
-			sy =(float(l[5]))
-			model1 = float(l[6])
+			parmPSI = float(l[0])
+			parmTHETA = float(l[1])
+			parmPHI = float(l[2])
+			sx =(float(l[3]))
+			sy =(float(l[4]))
+			model1 = float(l[5])
 			#Convert euler angles from EMAN2 to FREALIGN/SPIDER convention
 			if debug is True:
 				print 'parmPSI = %s	parmTHETA = %s	parmPHI = %s	' %(parmPSI,parmTHETA,parmPHI)
@@ -515,7 +515,7 @@ def eman2_mods(num_mod,model,mod_count,debug):
 	
         if int(num_mod) > 1:
 
-                cmd = 'e2proc3d.py --first=%s --last=%s %s %s_%03d.mrc' %(model,model[:-4],mod_count)
+                cmd = 'e2proc3d.py --first=%s --last=%s %s %s_%03d.mrc' %(mod_count, mod_count,model,model[:-4],mod_count)
         	if debug is True:
 			print cmd
 	        subprocess.Popen(cmd,shell=True).wait()
