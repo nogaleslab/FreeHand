@@ -1214,7 +1214,7 @@ def plotFH(params,ccp4_path,cwd):
 			cmd = 'rm -r model%02d_plots_CC_v101_merge.* model%02d_plots_CC_v101_??.* %s_%03d.mrc %s_%02d.mrc' %(mod,mod,model[:-4],mod,stack[:-4],mod)
 		        subprocess.Popen(cmd,shell=True).wait()
 
-		mod = mod + 1
+		mod = mod + 2
 #===================
 def format_ctf(ctf):
 	#Appion files have a numbering scheme within the first column that needs to be removed
