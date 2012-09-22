@@ -745,7 +745,8 @@ def fastFree_run(params,cwd,mod):
         y = open(ctf,'r')
         tot = len(y.readlines())
         tot = tot - 4
-
+	if debug is True:
+		print tot
         
 	#Run Free-Hand test                
 	
@@ -796,8 +797,13 @@ def fastFree_run(params,cwd,mod):
 
 	incr = str(round(tot/int(procs))+1)
 
+	if debug is True:
+		print ctfEXE
+
 	#Setup inputs for free-hand executable
 	cmd = 'cp %s/fastfreehand_v1_01.exe .' %(cwd)					
+	if debug is True:
+		print cmd
 	subprocess.Popen(cmd,shell=True).wait()
 	exe = 'fastfreehand_v1_01.exe\n'
 	p1 = '%s,%s,%s,%s\n' %(pix,snr,cs,volt)					
