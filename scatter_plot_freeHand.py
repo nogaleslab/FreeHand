@@ -60,7 +60,7 @@ def scatter(data,lim,tilt,include):
 
         newDist = sorted(dist)
 
-        numReadLines = round((float(include)/100)*len(loadData[:,1]))
+        numReadLines = int(round((float(include)/100)*len(loadData[:,1])))
 
         includeRadius = []
         for j in xrange(numReadLines):

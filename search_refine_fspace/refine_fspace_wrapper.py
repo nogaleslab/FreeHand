@@ -4,9 +4,9 @@
 #	Refinement info		##
 ##################################
 
-model = 'prot_1.mrc'	#Model name (mrc format)
-stack = 'stack00_dc4_sel.mrc'	#stack name (mrc format)
-par = 'parameter_00_sel_format_merge.par' 	#parameter file
+model = 'iid_iia_iib_scp_4.mrc'	#Model name (mrc format)
+stack = 'start00_01.mrc'	#stack name (mrc format)
+par = 'parameter_00_sel_01_format_merge.par' 	#parameter file
 
 #Parameters
 apix = 6.02			#pixel size (A/pix)
@@ -15,15 +15,15 @@ cs = 2.2			#Spherical aberration
 kv = 120			#Accelerating voltage
 
 #refine_fspace inputs
-thetaR = 30			#Theta constraint during refinement
-psiR = 5			#psi constraint 
-shR = 5				#shift constraint 
-ri = 336			#radius for searching (ang)
-rmax1 = 300			#low resolution limit (angstroms)
-rmax2 = 12			#high resolution limit (angstroms)
+thetaR = 60			#Theta constraint during refinement
+psiR = 10			#psi constraint 
+shR = 12				#shift constraint 
+ri = 169			#radius for searching (ang)
+rmax1 = 250			#low resolution limit (angstroms)
+rmax2 = 30			#high resolution limit (angstroms)
 
 #Number of processors
-tot = 86			#number of particle to refine
+tot = 81			#number of particle to refine
 incr = 11			# nprocs = tot/incr
 
 ###################################
